@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-/// Represents the responsive size category for the available app window width.
+/// Represents the responsive category for the available app window width.
 ///
 /// This follows the compact, medium, expanded, large, and extra-large width
 /// breakpoint names from Material Design 3.
@@ -8,7 +8,7 @@ import 'package:flutter/widgets.dart';
 /// It does not identify the physical device type. Device examples from Material
 /// Design 3 are common examples for each width range, not runtime device
 /// detection.
-enum ResponsiveWindowSize {
+enum ResponsiveWindowCategory {
   /// Compact width.
   ///
   /// Represents widths under 600 logical pixels.
@@ -67,30 +67,30 @@ final class ResponsiveWindowData {
   /// The maximum height available to the current app window scope.
   final double height;
 
-  /// The upper width boundary for [ResponsiveWindowSize.compact].
+  /// The upper width boundary for [ResponsiveWindowCategory.compact].
   ///
   /// Widths smaller than this value are classified as
-  /// [ResponsiveWindowSize.compact].
+  /// [ResponsiveWindowCategory.compact].
   final double compactBreakpoint;
 
-  /// The upper width boundary for [ResponsiveWindowSize.medium].
+  /// The upper width boundary for [ResponsiveWindowCategory.medium].
   ///
   /// Widths greater than or equal to [compactBreakpoint] and smaller than
-  /// [mediumBreakpoint] are classified as [ResponsiveWindowSize.medium].
+  /// [mediumBreakpoint] are classified as [ResponsiveWindowCategory.medium].
   final double mediumBreakpoint;
 
-  /// The upper width boundary for [ResponsiveWindowSize.expanded].
+  /// The upper width boundary for [ResponsiveWindowCategory.expanded].
   ///
   /// Widths greater than or equal to [mediumBreakpoint] and smaller than
-  /// [expandedBreakpoint] are classified as [ResponsiveWindowSize.expanded].
+  /// [expandedBreakpoint] are classified as [ResponsiveWindowCategory.expanded].
   final double expandedBreakpoint;
 
-  /// The upper width boundary for [ResponsiveWindowSize.large].
+  /// The upper width boundary for [ResponsiveWindowCategory.large].
   ///
   /// Widths greater than or equal to [expandedBreakpoint] and smaller than
-  /// [largeBreakpoint] are classified as [ResponsiveWindowSize.large].
+  /// [largeBreakpoint] are classified as [ResponsiveWindowCategory.large].
   /// Widths greater than or equal to [largeBreakpoint] are classified as
-  /// [ResponsiveWindowSize.extraLarge].
+  /// [ResponsiveWindowCategory.extraLarge].
   final double largeBreakpoint;
 
   /// Returns the nearest [ResponsiveWindowData] from the widget tree, if any.
@@ -120,6 +120,9 @@ final class ResponsiveWindowData {
     return data;
   }
 
+  /// The current app window size as a Flutter [Size].
+  Size get size => Size(width, height);
+
   /// Whether the current width is smaller than [compactBreakpoint].
   bool get isCompact => width < compactBreakpoint;
 
@@ -139,13 +142,13 @@ final class ResponsiveWindowData {
   /// Whether the current width is greater than or equal to [largeBreakpoint].
   bool get isExtraLarge => width >= largeBreakpoint;
 
-  /// The responsive size category for the current width.
-  ResponsiveWindowSize get size {
-    if (isCompact) return ResponsiveWindowSize.compact;
-    if (isMedium) return ResponsiveWindowSize.medium;
-    if (isExpanded) return ResponsiveWindowSize.expanded;
-    if (isLarge) return ResponsiveWindowSize.large;
-    return ResponsiveWindowSize.extraLarge;
+  /// The responsive category for the current width.
+  ResponsiveWindowCategory get category {
+    if (isCompact) return ResponsiveWindowCategory.compact;
+    if (isMedium) return ResponsiveWindowCategory.medium;
+    if (isExpanded) return ResponsiveWindowCategory.expanded;
+    if (isLarge) return ResponsiveWindowCategory.large;
+    return ResponsiveWindowCategory.extraLarge;
   }
 
   @override

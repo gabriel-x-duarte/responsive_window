@@ -52,7 +52,7 @@ class HomePage extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            'Current window size',
+                            'Current window data',
                             style: Theme.of(context).textTheme.titleLarge,
                             textAlign: TextAlign.center,
                           ),
@@ -62,7 +62,10 @@ class HomePage extends StatelessWidget {
                             'Height: ${windowData.height.toStringAsFixed(0)}',
                           ),
                           const SizedBox(height: 16),
-                          Text('Size: ${_windowSizeLabel(windowData.size)}'),
+                          Text(
+                            'Category: '
+                            '${_windowCategoryLabel(windowData.category)}',
+                          ),
                           const SizedBox(height: 24),
                           _LayoutMessage(windowData: windowData),
                         ],
@@ -108,12 +111,12 @@ class _LayoutMessage extends StatelessWidget {
   }
 }
 
-String _windowSizeLabel(ResponsiveWindowSize size) {
-  return switch (size) {
-    ResponsiveWindowSize.compact => 'Compact',
-    ResponsiveWindowSize.medium => 'Medium',
-    ResponsiveWindowSize.expanded => 'Expanded',
-    ResponsiveWindowSize.large => 'Large',
-    ResponsiveWindowSize.extraLarge => 'Extra Large',
+String _windowCategoryLabel(ResponsiveWindowCategory category) {
+  return switch (category) {
+    ResponsiveWindowCategory.compact => 'Compact',
+    ResponsiveWindowCategory.medium => 'Medium',
+    ResponsiveWindowCategory.expanded => 'Expanded',
+    ResponsiveWindowCategory.large => 'Large',
+    ResponsiveWindowCategory.extraLarge => 'Extra Large',
   };
 }
