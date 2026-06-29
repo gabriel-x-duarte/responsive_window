@@ -31,36 +31,48 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final window = context.window;
+    final ResponsiveWindowData windowData = context.windowData;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Responsive Window Example'),
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Current window size',
-                    style: Theme.of(context).textTheme.titleLarge,
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.all(36),
+              sliver: SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Current window size',
+                            style: Theme.of(context).textTheme.titleLarge,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 16),
+                          Text('Width: ${windowData.width.toStringAsFixed(0)}'),
+                          Text(
+                            'Height: ${windowData.height.toStringAsFixed(0)}',
+                          ),
+                          const SizedBox(height: 16),
+                          Text('Size: ${_windowSizeLabel(windowData.size)}'),
+                          const SizedBox(height: 24),
+                          _LayoutMessage(windowData: windowData),
+                        ],
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: 16),
-                  Text('Width: ${window.width.toStringAsFixed(0)}'),
-                  Text('Height: ${window.height.toStringAsFixed(0)}'),
-                  const SizedBox(height: 16),
-                  Text('Size: ${_windowSizeLabel(window.size)}'),
-                  const SizedBox(height: 24),
-                  _LayoutMessage(window: window),
-                ],
+                ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -69,26 +81,26 @@ class HomePage extends StatelessWidget {
 
 class _LayoutMessage extends StatelessWidget {
   const _LayoutMessage({
-    required this.window,
+    required this.windowData,
   });
 
-  final ResponsiveWindowData window;
+  final ResponsiveWindowData windowData;
 
   @override
   Widget build(BuildContext context) {
-    if (window.isCompact) {
+    if (windowData.isCompact) {
       return const Text('Use a compact layout.');
     }
 
-    if (window.isMedium) {
+    if (windowData.isMedium) {
       return const Text('Use a medium layout.');
     }
 
-    if (window.isExpanded) {
+    if (windowData.isExpanded) {
       return const Text('Use an expanded layout.');
     }
 
-    if (window.isLarge) {
+    if (windowData.isLarge) {
       return const Text('Use a large layout.');
     }
 

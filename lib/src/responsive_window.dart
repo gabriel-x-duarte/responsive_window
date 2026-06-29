@@ -55,11 +55,11 @@ final class ResponsiveWindowData {
     required this.expandedBreakpoint,
     required this.largeBreakpoint,
   }) : assert(
-         compactBreakpoint < mediumBreakpoint &&
-             mediumBreakpoint < expandedBreakpoint &&
-             expandedBreakpoint < largeBreakpoint,
-         'Breakpoints must be ordered from smallest to largest.',
-       );
+          compactBreakpoint < mediumBreakpoint &&
+              mediumBreakpoint < expandedBreakpoint &&
+              expandedBreakpoint < largeBreakpoint,
+          'Breakpoints must be ordered from smallest to largest.',
+        );
 
   /// The maximum width available to the current app window scope.
   final double width;
@@ -162,17 +162,20 @@ final class ResponsiveWindowData {
 
   @override
   int get hashCode => Object.hash(
-    width,
-    height,
-    compactBreakpoint,
-    mediumBreakpoint,
-    expandedBreakpoint,
-    largeBreakpoint,
-  );
+        width,
+        height,
+        compactBreakpoint,
+        mediumBreakpoint,
+        expandedBreakpoint,
+        largeBreakpoint,
+      );
 }
 
 class _ResponsiveWindowProvider extends InheritedWidget {
-  const _ResponsiveWindowProvider({required this.data, required super.child});
+  const _ResponsiveWindowProvider({
+    required this.data,
+    required super.child,
+  });
 
   final ResponsiveWindowData data;
 
@@ -234,11 +237,11 @@ class ResponsiveWindow extends StatelessWidget {
     this.expandedBreakpoint = ResponsiveWindow.defaultExpandedBreakpoint,
     this.largeBreakpoint = ResponsiveWindow.defaultLargeBreakpoint,
   }) : assert(
-         compactBreakpoint < mediumBreakpoint &&
-             mediumBreakpoint < expandedBreakpoint &&
-             expandedBreakpoint < largeBreakpoint,
-         'Breakpoints must be ordered from smallest to largest.',
-       );
+          compactBreakpoint < mediumBreakpoint &&
+              mediumBreakpoint < expandedBreakpoint &&
+              expandedBreakpoint < largeBreakpoint,
+          'Breakpoints must be ordered from smallest to largest.',
+        );
 
   /// The child widget that receives access to [ResponsiveWindowData].
   ///
@@ -294,12 +297,13 @@ extension BuildContextResponsiveWindow on BuildContext {
   /// Returns the nearest [ResponsiveWindowData].
   ///
   /// ```dart
-  /// if (context.window.isCompact) {
+  /// if (context.windowData.isCompact) {
   ///   // Build compact layout.
   /// }
   /// ```
-  ResponsiveWindowData get window => ResponsiveWindowData.of(this);
+  ResponsiveWindowData get windowData => ResponsiveWindowData.of(this);
 
   /// Returns the nearest [ResponsiveWindowData], if any.
-  ResponsiveWindowData? get maybeWindow => ResponsiveWindowData.maybeOf(this);
+  ResponsiveWindowData? get maybeWindowData =>
+      ResponsiveWindowData.maybeOf(this);
 }
