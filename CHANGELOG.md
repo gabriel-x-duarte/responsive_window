@@ -1,4 +1,7 @@
-# Changelog
+## 1.0.1
+
+* DOCS: remove top-level changelog title
+* CHORE: remove empty Flutter configuration from pubspec
 
 ## 1.0.0
 
