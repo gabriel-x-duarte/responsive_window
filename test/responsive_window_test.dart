@@ -101,14 +101,17 @@ void main() {
         dataForWidth(600).category,
         ResponsiveWindowCategory.medium,
       );
+
       expect(
         dataForWidth(840).category,
         ResponsiveWindowCategory.expanded,
       );
+
       expect(
         dataForWidth(1200).category,
         ResponsiveWindowCategory.large,
       );
+
       expect(
         dataForWidth(1600).category,
         ResponsiveWindowCategory.extraLarge,
@@ -165,16 +168,18 @@ void main() {
       late ResponsiveWindowData windowData;
 
       await tester.pumpWidget(
-        SizedBox(
-          width: 700,
-          height: 500,
-          child: ResponsiveWindow(
-            child: Builder(
-              builder: (context) {
-                windowData = context.windowData;
+        Center(
+          child: SizedBox(
+            width: 700,
+            height: 500,
+            child: ResponsiveWindow(
+              child: Builder(
+                builder: (context) {
+                  windowData = context.windowData;
 
-                return const SizedBox();
-              },
+                  return const SizedBox();
+                },
+              ),
             ),
           ),
         ),
@@ -188,28 +193,40 @@ void main() {
 
     testWidgets('uses custom breakpoints from ResponsiveWindow',
         (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(1000, 600);
+
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+
       late ResponsiveWindowData windowData;
 
       await tester.pumpWidget(
-        SizedBox(
-          width: 920,
-          height: 500,
-          child: ResponsiveWindow(
-            compactBreakpoint: 640,
-            mediumBreakpoint: 900,
-            expandedBreakpoint: 1280,
-            largeBreakpoint: 1680,
-            child: Builder(
-              builder: (context) {
-                windowData = context.windowData;
+        Center(
+          child: SizedBox(
+            width: 920,
+            height: 500,
+            child: ResponsiveWindow(
+              compactBreakpoint: 640,
+              mediumBreakpoint: 900,
+              expandedBreakpoint: 1280,
+              largeBreakpoint: 1680,
+              child: Builder(
+                builder: (context) {
+                  windowData = context.windowData;
 
-                return const SizedBox();
-              },
+                  return const SizedBox();
+                },
+              ),
             ),
           ),
         ),
       );
 
+      expect(windowData.width, 920);
+      expect(windowData.height, 500);
       expect(windowData.compactBreakpoint, 640);
       expect(windowData.mediumBreakpoint, 900);
       expect(windowData.expandedBreakpoint, 1280);
@@ -272,16 +289,18 @@ void main() {
       late ResponsiveWindowData windowData;
 
       await tester.pumpWidget(
-        SizedBox(
-          width: 500,
-          height: 400,
-          child: ResponsiveWindow(
-            child: Builder(
-              builder: (context) {
-                windowData = context.windowData;
+        Center(
+          child: SizedBox(
+            width: 500,
+            height: 400,
+            child: ResponsiveWindow(
+              child: Builder(
+                builder: (context) {
+                  windowData = context.windowData;
 
-                return const SizedBox();
-              },
+                  return const SizedBox();
+                },
+              ),
             ),
           ),
         ),
@@ -289,6 +308,7 @@ void main() {
 
       expect(windowData.width, 500);
       expect(windowData.height, 400);
+      expect(windowData.size, const Size(500, 400));
       expect(windowData.category, ResponsiveWindowCategory.compact);
     });
   });
