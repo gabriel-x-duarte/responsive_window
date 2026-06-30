@@ -1,5 +1,6 @@
 ## 1.0.1
 
+* DOCS: refine README overview
 * DOCS: remove top-level changelog title
 * CHORE: remove empty Flutter configuration from pubspec
 

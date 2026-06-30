@@ -1,4 +1,9 @@
-A lightweight app-level responsive window utility for Flutter, with Material Design 3-inspired width breakpoints.
+A lightweight app-level utility for reading the current Flutter app window size
+from anywhere in the widget tree.
+
+Use it to make simple and predictable layout decisions based on window size or
+responsive width breakpoints, without scaling widgets or detecting physical
+device types.
 
 ## Features
 
