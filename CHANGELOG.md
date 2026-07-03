@@ -1,3 +1,7 @@
+## 1.0.3
+
+* DOCS: clarify local ResponsiveWindow constraint guidance
+
 ## 1.0.2
 
 * DOCS: clarify advanced responsive window scope usage

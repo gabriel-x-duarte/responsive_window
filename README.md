@@ -172,8 +172,8 @@ and height constraints that are different from the full app window.
 If the local subtree receives the same width and height constraints as the app
 window, the extra `ResponsiveWindow` is unnecessary.
 
-A local `ResponsiveWindow` is not suitable for subtrees with unbounded width or
-height constraints.
+A local `ResponsiveWindow` is not suitable when placed inside a subtree where
+the available width or height constraints are unbounded.
 
 When multiple `ResponsiveWindow` widgets exist in the widget tree,
 `context.windowData` reads from the nearest one.
