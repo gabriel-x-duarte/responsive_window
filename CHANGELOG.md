@@ -1,3 +1,8 @@
+## 1.0.2
+
+* DOCS: clarify advanced responsive window scope usage
+* DOCS: improve README native window guidance
+
 ## 1.0.1
 
 * DOCS: refine README overview

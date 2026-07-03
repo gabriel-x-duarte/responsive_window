@@ -1,4 +1,4 @@
-A lightweight app-level utility for reading the current Flutter app window size
+An app-level utility for reading the current Flutter app window size
 from anywhere in the widget tree.
 
 Use it to make simple and predictable layout decisions based on window size or
@@ -11,11 +11,10 @@ device types.
 - Material Design 3-inspired width breakpoints
 - Supports `compact`, `medium`, `expanded`, `large`, and `extraLarge`
 - Access responsive window data from `BuildContext`
-- Provides responsive window category and boolean helpers
-- Provides window width, height, and Flutter `Size`
+- Provides window width, height, Flutter `Size`, category, and boolean helpers
 - Customizable breakpoints
 - Uses Flutter widgets only, with no dependency on Material widgets
-- Does not control native desktop windows
+- Does not configure native desktop windows
 
 ## Default Breakpoints
 
@@ -102,8 +101,8 @@ Available properties and helpers:
 
 - `windowData.width`
 - `windowData.height`
-- `windowData.category`
 - `windowData.size`
+- `windowData.category`
 - `windowData.isCompact`
 - `windowData.isMedium`
 - `windowData.isExpanded`
@@ -156,15 +155,38 @@ const ResponsiveWindow(
 
 Breakpoints must be ordered from smallest to largest.
 
+## Advanced Scope Usage
+
+The primary and recommended usage is to place `ResponsiveWindow` at the app
+level, above `MaterialApp`, `CupertinoApp`, or `WidgetsApp`.
+
+`ResponsiveWindow` uses Flutter's `LayoutBuilder`, so it reads the layout
+constraints provided by its parent.
+
+In most apps, the app-level `ResponsiveWindow` is all you need.
+
+In advanced cases, you can place another `ResponsiveWindow` inside a specific
+subtree. This is only useful when that subtree is laid out with bounded width
+and height constraints that are different from the full app window.
+
+If the local subtree receives the same width and height constraints as the app
+window, the extra `ResponsiveWindow` is unnecessary.
+
+A local `ResponsiveWindow` is not suitable for subtrees with unbounded width or
+height constraints.
+
+When multiple `ResponsiveWindow` widgets exist in the widget tree,
+`context.windowData` reads from the nearest one.
+
 ## Native Windows
 
-`ResponsiveWindow` does not control the native platform window.
+`ResponsiveWindow` does not manage native desktop window behavior.
 
 It only measures the available Flutter layout constraints and provides
 responsive window data to the widget subtree.
 
 For desktop apps, use a dedicated window management package when you need to
-configure the physical window size, minimum size, title, or position.
+configure the native window size, minimum size, title, or position.
 
 ## Extension Conflicts
 

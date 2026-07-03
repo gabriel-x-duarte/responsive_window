@@ -191,7 +191,7 @@ class _ResponsiveWindowProvider extends InheritedWidget {
 /// Provides responsive app window data to the widget subtree.
 ///
 /// This widget is intended to wrap the root app widget, usually above
-/// [MaterialApp], [CupertinoApp], or [WidgetsApp].
+/// `MaterialApp`, `CupertinoApp`, or `WidgetsApp`.
 ///
 /// It uses [LayoutBuilder], so it measures the available space from its parent
 /// constraints. When placed at the root, this usually represents the current
@@ -248,7 +248,7 @@ class ResponsiveWindow extends StatelessWidget {
 
   /// The child widget that receives access to [ResponsiveWindowData].
   ///
-  /// This is typically a [MaterialApp], [CupertinoApp], or [WidgetsApp].
+  /// This is typically a `MaterialApp`, `CupertinoApp`, or `WidgetsApp`.
   final Widget child;
 
   /// The upper width boundary for compact layouts.
