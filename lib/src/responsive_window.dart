@@ -99,7 +99,7 @@ final class ResponsiveWindowData {
   static ResponsiveWindowData? maybeOf(BuildContext context) {
     return context
         .dependOnInheritedWidgetOfExactType<_ResponsiveWindowProvider>()
-        ?.data;
+        ?.windowData;
   }
 
   /// Returns the nearest [ResponsiveWindowData] from the widget tree.
@@ -107,9 +107,9 @@ final class ResponsiveWindowData {
   /// Throws a [FlutterError] when no [ResponsiveWindow] exists above the given
   /// [context].
   static ResponsiveWindowData of(BuildContext context) {
-    final data = maybeOf(context);
+    final ResponsiveWindowData? windowData = maybeOf(context);
 
-    if (data == null) {
+    if (windowData == null) {
       throw FlutterError(
         'No ResponsiveWindow found in context.\n'
         'Make sure ResponsiveWindow is placed above your app root, usually '
@@ -117,7 +117,7 @@ final class ResponsiveWindowData {
       );
     }
 
-    return data;
+    return windowData;
   }
 
   /// The current app window size as a Flutter [Size].
@@ -176,15 +176,15 @@ final class ResponsiveWindowData {
 
 class _ResponsiveWindowProvider extends InheritedWidget {
   const _ResponsiveWindowProvider({
-    required this.data,
+    required this.windowData,
     required super.child,
   });
 
-  final ResponsiveWindowData data;
+  final ResponsiveWindowData windowData;
 
   @override
   bool updateShouldNotify(_ResponsiveWindowProvider oldWidget) {
-    return data != oldWidget.data;
+    return windowData != oldWidget.windowData;
   }
 }
 
@@ -280,7 +280,7 @@ class ResponsiveWindow extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         return _ResponsiveWindowProvider(
-          data: ResponsiveWindowData(
+          windowData: ResponsiveWindowData(
             width: constraints.maxWidth,
             height: constraints.maxHeight,
             compactBreakpoint: compactBreakpoint,
@@ -291,6 +291,233 @@ class ResponsiveWindow extends StatelessWidget {
           child: child,
         );
       },
+    );
+  }
+}
+
+/// Resolves a value based on the current [ResponsiveWindowCategory].
+///
+/// The [compact] value is required and is used as the base fallback.
+///
+/// Values fall back from the current category to the nearest smaller configured
+/// category:
+///
+/// - compact uses [compact]
+/// - medium uses [medium] or [compact]
+/// - expanded uses [expanded], [medium], or [compact]
+/// - large uses [large], [expanded], [medium], or [compact]
+/// - extraLarge uses [extraLarge], [large], [expanded], [medium], or [compact]
+@immutable
+final class ResponsiveWindowValue<T> {
+  /// Creates a responsive value resolver.
+  const ResponsiveWindowValue({
+    required this.compact,
+    this.medium,
+    this.expanded,
+    this.large,
+    this.extraLarge,
+  });
+
+  /// The value used for compact widths.
+  final T compact;
+
+  /// The value used for medium widths.
+  final T? medium;
+
+  /// The value used for expanded widths.
+  final T? expanded;
+
+  /// The value used for large widths.
+  final T? large;
+
+  /// The value used for extra-large widths.
+  final T? extraLarge;
+
+  /// Resolves the value using the nearest [ResponsiveWindowData] in [context].
+  T resolve(BuildContext context) {
+    return resolveWith(ResponsiveWindowData.of(context));
+  }
+
+  /// Resolves the value using the given [ResponsiveWindowData].
+  T resolveWith(ResponsiveWindowData windowData) {
+    final _ResponsiveWindowValueEntry<T> entry = _resolveEntryWith(windowData);
+
+    return entry.value;
+  }
+
+  _ResponsiveWindowValueEntry<T> _resolveEntryWith(
+    ResponsiveWindowData windowData,
+  ) {
+    return switch (windowData.category) {
+      ResponsiveWindowCategory.compact => _ResponsiveWindowValueEntry<T>(
+          category: ResponsiveWindowCategory.compact,
+          value: compact,
+        ),
+      ResponsiveWindowCategory.medium => _ResponsiveWindowValueEntry<T>(
+          category: medium != null
+              ? ResponsiveWindowCategory.medium
+              : ResponsiveWindowCategory.compact,
+          value: medium ?? compact,
+        ),
+      ResponsiveWindowCategory.expanded => _ResponsiveWindowValueEntry<T>(
+          category: expanded != null
+              ? ResponsiveWindowCategory.expanded
+              : medium != null
+                  ? ResponsiveWindowCategory.medium
+                  : ResponsiveWindowCategory.compact,
+          value: expanded ?? medium ?? compact,
+        ),
+      ResponsiveWindowCategory.large => _ResponsiveWindowValueEntry<T>(
+          category: large != null
+              ? ResponsiveWindowCategory.large
+              : expanded != null
+                  ? ResponsiveWindowCategory.expanded
+                  : medium != null
+                      ? ResponsiveWindowCategory.medium
+                      : ResponsiveWindowCategory.compact,
+          value: large ?? expanded ?? medium ?? compact,
+        ),
+      ResponsiveWindowCategory.extraLarge => _ResponsiveWindowValueEntry<T>(
+          category: extraLarge != null
+              ? ResponsiveWindowCategory.extraLarge
+              : large != null
+                  ? ResponsiveWindowCategory.large
+                  : expanded != null
+                      ? ResponsiveWindowCategory.expanded
+                      : medium != null
+                          ? ResponsiveWindowCategory.medium
+                          : ResponsiveWindowCategory.compact,
+          value: extraLarge ?? large ?? expanded ?? medium ?? compact,
+        ),
+    };
+  }
+}
+
+final class _ResponsiveWindowValueEntry<T> {
+  const _ResponsiveWindowValueEntry({
+    required this.category,
+    required this.value,
+  });
+
+  final ResponsiveWindowCategory category;
+  final T value;
+}
+
+/// Builds a widget using the current [ResponsiveWindowData].
+typedef ResponsiveWindowWidgetBuilder = Widget Function(
+  BuildContext context,
+  ResponsiveWindowData windowData,
+);
+
+/// Builds a responsive widget based on the current [ResponsiveWindowCategory].
+///
+/// The [compact] builder is required and is used as the base fallback.
+///
+/// Builders fall back from the current category to the nearest smaller
+/// configured category, following the same behavior as [ResponsiveWindowValue].
+class ResponsiveWindowBuilder extends StatelessWidget {
+  /// The default transition duration used by [ResponsiveWindowBuilder.animated].
+  static const Duration defaultTransitionDuration = Duration(milliseconds: 260);
+
+  /// Creates a responsive widget builder without transitions.
+  const ResponsiveWindowBuilder({
+    super.key,
+    required this.compact,
+    this.medium,
+    this.expanded,
+    this.large,
+    this.extraLarge,
+  })  : _animated = false,
+        _duration = null,
+        _reverseDuration = null,
+        _switchInCurve = Curves.linear,
+        _switchOutCurve = Curves.linear,
+        _transitionBuilder = null,
+        _layoutBuilder = null;
+
+  /// Creates a responsive widget builder with animated transitions.
+  ///
+  /// This uses [AnimatedSwitcher] internally. The transition runs only when the
+  /// resolved responsive builder changes after applying fallback rules.
+  ///
+  /// Window size changes can still rebuild this widget, but they do not trigger
+  /// an animated transition while the resolved builder remains the same.
+  const ResponsiveWindowBuilder.animated({
+    super.key,
+    required this.compact,
+    this.medium,
+    this.expanded,
+    this.large,
+    this.extraLarge,
+    Duration duration = ResponsiveWindowBuilder.defaultTransitionDuration,
+    Duration? reverseDuration,
+    Curve switchInCurve = Curves.easeOutCubic,
+    Curve switchOutCurve = Curves.easeInCubic,
+    AnimatedSwitcherTransitionBuilder transitionBuilder =
+        AnimatedSwitcher.defaultTransitionBuilder,
+    AnimatedSwitcherLayoutBuilder layoutBuilder =
+        AnimatedSwitcher.defaultLayoutBuilder,
+  })  : _animated = true,
+        _duration = duration,
+        _reverseDuration = reverseDuration,
+        _switchInCurve = switchInCurve,
+        _switchOutCurve = switchOutCurve,
+        _transitionBuilder = transitionBuilder,
+        _layoutBuilder = layoutBuilder;
+
+  /// The builder used for compact widths.
+  final ResponsiveWindowWidgetBuilder compact;
+
+  /// The builder used for medium widths.
+  final ResponsiveWindowWidgetBuilder? medium;
+
+  /// The builder used for expanded widths.
+  final ResponsiveWindowWidgetBuilder? expanded;
+
+  /// The builder used for large widths.
+  final ResponsiveWindowWidgetBuilder? large;
+
+  /// The builder used for extra-large widths.
+  final ResponsiveWindowWidgetBuilder? extraLarge;
+
+  final bool _animated;
+  final Duration? _duration;
+  final Duration? _reverseDuration;
+  final Curve _switchInCurve;
+  final Curve _switchOutCurve;
+  final AnimatedSwitcherTransitionBuilder? _transitionBuilder;
+  final AnimatedSwitcherLayoutBuilder? _layoutBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    final ResponsiveWindowData windowData = context.windowData;
+
+    final _ResponsiveWindowValueEntry<ResponsiveWindowWidgetBuilder> entry =
+        ResponsiveWindowValue<ResponsiveWindowWidgetBuilder>(
+      compact: compact,
+      medium: medium,
+      expanded: expanded,
+      large: large,
+      extraLarge: extraLarge,
+    )._resolveEntryWith(windowData);
+
+    final Widget child = entry.value(context, windowData);
+
+    if (!_animated) {
+      return child;
+    }
+
+    return AnimatedSwitcher(
+      duration: _duration!,
+      reverseDuration: _reverseDuration,
+      switchInCurve: _switchInCurve,
+      switchOutCurve: _switchOutCurve,
+      transitionBuilder: _transitionBuilder!,
+      layoutBuilder: _layoutBuilder!,
+      child: KeyedSubtree(
+        key: ValueKey<ResponsiveWindowCategory>(entry.category),
+        child: child,
+      ),
     );
   }
 }

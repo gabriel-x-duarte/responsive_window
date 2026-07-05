@@ -12,6 +12,8 @@ device types.
 - Supports `compact`, `medium`, `expanded`, `large`, and `extraLarge`
 - Access responsive window data from `BuildContext`
 - Provides window width, height, Flutter `Size`, category, and boolean helpers
+- Resolves responsive values with breakpoint fallbacks
+- Builds responsive widgets with optional animated transitions
 - Customizable breakpoints
 - Uses Flutter widgets only, with no dependency on Material widgets
 - Does not configure native desktop windows
@@ -137,6 +139,131 @@ Widget build(BuildContext context) {
       return const ExtraLargeLayout();
   }
 }
+```
+
+#### Resolve responsive values
+
+Use `ResponsiveWindowValue` to choose a value based on the current responsive
+category.
+
+This is useful when layout values should react to the current window size, such
+as padding, spacing, column count, or maximum content width.
+
+```dart
+Widget build(BuildContext context) {
+  final double padding = const ResponsiveWindowValue<double>(
+    compact: 16,
+    expanded: 24,
+    large: 32,
+  ).resolve(context);
+
+  final int columns = const ResponsiveWindowValue<int>(
+    compact: 1,
+    medium: 2,
+    large: 4,
+  ).resolve(context);
+
+  return Padding(
+    padding: EdgeInsets.all(padding),
+    child: ProductGrid(columns: columns),
+  );
+}
+```
+
+`compact` is required and works as the base fallback.
+
+Values fall back from the current category to the nearest smaller configured
+category:
+
+- `compact` uses `compact`
+- `medium` uses `medium` or `compact`
+- `expanded` uses `expanded`, `medium`, or `compact`
+- `large` uses `large`, `expanded`, `medium`, or `compact`
+- `extraLarge` uses `extraLarge`, `large`, `expanded`, `medium`, or `compact`
+
+If you already have a `ResponsiveWindowData` instance, you can resolve directly
+from it:
+
+```dart
+final ResponsiveWindowData windowData = context.windowData;
+
+final double padding = const ResponsiveWindowValue<double>(
+  compact: 16,
+  expanded: 24,
+).resolveWith(windowData);
+```
+
+#### Build responsive widgets
+
+Use `ResponsiveWindowBuilder` when the widget tree should change based on the
+current responsive category.
+
+```dart
+ResponsiveWindowBuilder(
+  compact: (context, windowData) {
+    return const CompactLayout();
+  },
+  expanded: (context, windowData) {
+    return const ExpandedLayout();
+  },
+)
+```
+
+`compact` is required and works as the base fallback.
+
+Builders follow the same fallback rule as `ResponsiveWindowValue`. If the
+current category does not define a builder, `ResponsiveWindowBuilder` uses the
+nearest smaller configured builder.
+
+In the example above, `medium` uses the compact builder, while `large` and
+`extraLarge` use the expanded builder.
+
+#### Build responsive widgets with animation
+
+Use `ResponsiveWindowBuilder.animated` when switching between responsive layouts
+should be animated.
+
+```dart
+ResponsiveWindowBuilder.animated(
+  compact: (context, windowData) {
+    return const CompactLayout();
+  },
+  medium: (context, windowData) {
+    return const MediumLayout();
+  },
+  large: (context, windowData) {
+    return const LargeLayout();
+  },
+)
+```
+
+Animated transitions run only when the resolved responsive builder changes after
+applying fallback rules.
+
+For example, if `expanded` falls back to `medium`, resizing between `medium` and
+`expanded` does not trigger a layout transition because the resolved builder is
+the same.
+
+You can customize the animation:
+
+```dart
+ResponsiveWindowBuilder.animated(
+  duration: const Duration(milliseconds: 300),
+  switchInCurve: Curves.easeOutCubic,
+  switchOutCurve: Curves.easeInCubic,
+  transitionBuilder: (child, animation) {
+    return FadeTransition(
+      opacity: animation,
+      child: child,
+    );
+  },
+  compact: (context, windowData) {
+    return const CompactLayout();
+  },
+  expanded: (context, windowData) {
+    return const ExpandedLayout();
+  },
+)
 ```
 
 #### Custom breakpoints

@@ -1,3 +1,11 @@
+## 1.1.0
+
+* FEAT: add responsive value resolution with breakpoint fallbacks
+* FEAT: add responsive widget builder
+* FEAT: add animated responsive widget builder
+* DOCS: document responsive values and builders
+* TEST: add coverage for responsive values and builders
+
 ## 1.0.3
 
 * DOCS: clarify local ResponsiveWindow constraint guidance
