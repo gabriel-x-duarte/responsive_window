@@ -280,7 +280,8 @@ const ResponsiveWindow(
 )
 ```
 
-Breakpoints must be ordered from smallest to largest.
+Breakpoints must be finite values greater than 0 and ordered from smallest to
+largest.
 
 ## Advanced Scope Usage
 
@@ -299,8 +300,8 @@ and height constraints that are different from the full app window.
 If the local subtree receives the same width and height constraints as the app
 window, the extra `ResponsiveWindow` is unnecessary.
 
-A local `ResponsiveWindow` is not suitable when placed inside a subtree where
-the available width or height constraints are unbounded.
+A local `ResponsiveWindow` cannot be placed inside a subtree where the available
+width or height constraints are unbounded.
 
 When multiple `ResponsiveWindow` widgets exist in the widget tree,
 `context.windowData` reads from the nearest one.

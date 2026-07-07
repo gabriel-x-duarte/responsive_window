@@ -66,6 +66,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _handleDestinationSelected(int index) {
+    if (index == _selectedIndex) {
+      return;
+    }
+
     setState(() {
       _selectedIndex = index;
     });
@@ -291,6 +295,13 @@ class _WindowDataCardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final EdgeInsetsGeometry pagePadding =
+        const ResponsiveWindowValue<EdgeInsetsGeometry>(
+      compact: EdgeInsets.all(16),
+      medium: EdgeInsets.all(24),
+      expanded: EdgeInsets.all(36),
+    ).resolveWith(windowData);
+
     final Color foregroundColor =
         ThemeData.estimateBrightnessForColor(color) == Brightness.dark
             ? Colors.white
@@ -299,7 +310,7 @@ class _WindowDataCardPage extends StatelessWidget {
     return CustomScrollView(
       slivers: [
         SliverPadding(
-          padding: const EdgeInsets.all(36),
+          padding: pagePadding,
           sliver: SliverFillRemaining(
             hasScrollBody: false,
             child: Center(

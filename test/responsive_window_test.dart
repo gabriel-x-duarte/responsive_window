@@ -155,6 +155,34 @@ void main() {
       expect(first, isNot(third));
     });
 
+    test('asserts when breakpoints are not finite', () {
+      expect(
+        () => ResponsiveWindowData(
+          width: 800,
+          height: 600,
+          compactBreakpoint: 600,
+          mediumBreakpoint: 840,
+          expandedBreakpoint: 1200,
+          largeBreakpoint: double.infinity,
+        ),
+        throwsAssertionError,
+      );
+    });
+
+    test('asserts when compactBreakpoint is not greater than 0', () {
+      expect(
+        () => ResponsiveWindowData(
+          width: 800,
+          height: 600,
+          compactBreakpoint: 0,
+          mediumBreakpoint: 840,
+          expandedBreakpoint: 1200,
+          largeBreakpoint: 1600,
+        ),
+        throwsAssertionError,
+      );
+    });
+
     test('asserts when breakpoints are not ordered', () {
       expect(
         () => ResponsiveWindowData(
@@ -178,6 +206,32 @@ void main() {
       expect(ResponsiveWindow.defaultLargeBreakpoint, 1600);
     });
 
+    test('asserts when breakpoints are not finite', () {
+      expect(
+        () => ResponsiveWindow(
+          compactBreakpoint: 600,
+          mediumBreakpoint: 840,
+          expandedBreakpoint: 1200,
+          largeBreakpoint: double.infinity,
+          child: const SizedBox(),
+        ),
+        throwsAssertionError,
+      );
+    });
+
+    test('asserts when compactBreakpoint is not greater than 0', () {
+      expect(
+        () => ResponsiveWindow(
+          compactBreakpoint: 0,
+          mediumBreakpoint: 840,
+          expandedBreakpoint: 1200,
+          largeBreakpoint: 1600,
+          child: const SizedBox(),
+        ),
+        throwsAssertionError,
+      );
+    });
+
     test('asserts when breakpoints are not ordered', () {
       expect(
         () => ResponsiveWindow(
@@ -190,6 +244,41 @@ void main() {
         throwsAssertionError,
       );
     });
+
+    testWidgets(
+      'asserts when placed where height constraints are unbounded',
+      (tester) async {
+        await tester.pumpWidget(
+          testDirectionality(
+            child: const SingleChildScrollView(
+              child: ResponsiveWindow(
+                child: SizedBox(),
+              ),
+            ),
+          ),
+        );
+
+        expect(tester.takeException(), isAssertionError);
+      },
+    );
+
+    testWidgets(
+      'asserts when placed where width constraints are unbounded',
+      (tester) async {
+        await tester.pumpWidget(
+          testDirectionality(
+            child: const SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: ResponsiveWindow(
+                child: SizedBox(),
+              ),
+            ),
+          ),
+        );
+
+        expect(tester.takeException(), isAssertionError);
+      },
+    );
 
     testWidgets('provides window data to the widget subtree', (tester) async {
       late ResponsiveWindowData windowData;
@@ -375,6 +464,19 @@ void main() {
       expect(value.resolveWith(dataForWidth(840)), 1);
       expect(value.resolveWith(dataForWidth(1200)), 1);
       expect(value.resolveWith(dataForWidth(1600)), 1);
+    });
+
+    test('treats optional null values as not configured', () {
+      const ResponsiveWindowValue<String> value = ResponsiveWindowValue<String>(
+        compact: 'compact',
+        medium: null,
+        expanded: 'expanded',
+        large: null,
+      );
+
+      expect(value.resolveWith(dataForWidth(600)), 'compact');
+      expect(value.resolveWith(dataForWidth(1200)), 'expanded');
+      expect(value.resolveWith(dataForWidth(1600)), 'expanded');
     });
 
     testWidgets('resolve uses ResponsiveWindowData from context',

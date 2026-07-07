@@ -54,7 +54,15 @@ final class ResponsiveWindowData {
     required this.mediumBreakpoint,
     required this.expandedBreakpoint,
     required this.largeBreakpoint,
-  }) : assert(
+  })  : assert(
+          largeBreakpoint < double.infinity,
+          'Breakpoints must be finite values.',
+        ),
+        assert(
+          compactBreakpoint > 0,
+          'Breakpoints must be greater than 0.',
+        ),
+        assert(
           compactBreakpoint < mediumBreakpoint &&
               mediumBreakpoint < expandedBreakpoint &&
               expandedBreakpoint < largeBreakpoint,
@@ -239,7 +247,15 @@ class ResponsiveWindow extends StatelessWidget {
     this.mediumBreakpoint = ResponsiveWindow.defaultMediumBreakpoint,
     this.expandedBreakpoint = ResponsiveWindow.defaultExpandedBreakpoint,
     this.largeBreakpoint = ResponsiveWindow.defaultLargeBreakpoint,
-  }) : assert(
+  })  : assert(
+          largeBreakpoint < double.infinity,
+          'Breakpoints must be finite values.',
+        ),
+        assert(
+          compactBreakpoint > 0,
+          'Breakpoints must be greater than 0.',
+        ),
+        assert(
           compactBreakpoint < mediumBreakpoint &&
               mediumBreakpoint < expandedBreakpoint &&
               expandedBreakpoint < largeBreakpoint,
@@ -279,6 +295,12 @@ class ResponsiveWindow extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
+        assert(
+          constraints.hasBoundedWidth && constraints.hasBoundedHeight,
+          'ResponsiveWindow cannot be placed where the available width or '
+          'height is unbounded.',
+        );
+
         return _ResponsiveWindowProvider(
           windowData: ResponsiveWindowData(
             width: constraints.maxWidth,
@@ -299,8 +321,8 @@ class ResponsiveWindow extends StatelessWidget {
 ///
 /// The [compact] value is required and is used as the base fallback.
 ///
-/// Values fall back from the current category to the nearest smaller configured
-/// category:
+/// When the current category has no configured value, resolution falls back to
+/// the nearest smaller configured category:
 ///
 /// - compact uses [compact]
 /// - medium uses [medium] or [compact]

@@ -1,3 +1,11 @@
+## 1.1.1
+
+* FIX: validate responsive breakpoints
+* FIX: assert bounded responsive window constraints
+* DOCS: clarify breakpoint requirements
+* DOCS: clarify local responsive scope constraints
+* TEST: add coverage for breakpoint and constraint assertions
+
 ## 1.1.0
 
 * FEAT: add responsive value resolution with breakpoint fallbacks
