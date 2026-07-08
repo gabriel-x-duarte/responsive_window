@@ -4,6 +4,7 @@ import 'package:responsive_window/responsive_window.dart';
 void main() {
   runApp(
     // ResponsiveWindow should wrap the root app widget.
+    // It uses ResponsiveWindowBreakpoints.material3 by default.
     const ResponsiveWindow(
       child: App(),
     ),
@@ -208,23 +209,23 @@ class _BottomNavigationLayout extends StatelessWidget {
     return Column(
       children: [
         Expanded(child: child),
-        BottomNavigationBar(
-          currentIndex: selectedIndex,
-          onTap: onDestinationSelected,
-          items: const [
-            BottomNavigationBarItem(
+        NavigationBar(
+          selectedIndex: selectedIndex,
+          onDestinationSelected: onDestinationSelected,
+          destinations: const [
+            NavigationDestination(
               icon: Icon(Icons.dashboard_outlined),
-              activeIcon: Icon(Icons.dashboard),
+              selectedIcon: Icon(Icons.dashboard),
               label: 'Data',
             ),
-            BottomNavigationBarItem(
+            NavigationDestination(
               icon: Icon(Icons.view_quilt_outlined),
-              activeIcon: Icon(Icons.view_quilt),
+              selectedIcon: Icon(Icons.view_quilt),
               label: 'Builder',
             ),
-            BottomNavigationBarItem(
+            NavigationDestination(
               icon: Icon(Icons.auto_awesome_motion_outlined),
-              activeIcon: Icon(Icons.auto_awesome_motion),
+              selectedIcon: Icon(Icons.auto_awesome_motion),
               label: 'Animated',
             ),
           ],
@@ -297,16 +298,16 @@ class _WindowDataCardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final EdgeInsetsGeometry pagePadding =
         const ResponsiveWindowValue<EdgeInsetsGeometry>(
-      compact: EdgeInsets.all(16),
-      medium: EdgeInsets.all(24),
-      expanded: EdgeInsets.all(36),
+      compact: EdgeInsets.all(24),
+      medium: EdgeInsets.all(36),
+      expanded: EdgeInsets.all(48),
     ).resolveWith(windowData);
 
     final EdgeInsetsGeometry cardPadding = windowData.isAtLeast(
       ResponsiveWindowCategory.expanded,
     )
-        ? const EdgeInsets.all(24)
-        : const EdgeInsets.all(16);
+        ? const EdgeInsets.all(48)
+        : const EdgeInsets.all(24);
 
     final Color foregroundColor =
         ThemeData.estimateBrightnessForColor(color) == Brightness.dark

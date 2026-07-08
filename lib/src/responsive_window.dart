@@ -43,6 +43,100 @@ enum ResponsiveWindowCategory {
   extraLarge,
 }
 
+/// Width breakpoints used to classify the available responsive app window size.
+@immutable
+final class ResponsiveWindowBreakpoints {
+  /// Creates width breakpoints for responsive category classification.
+  const ResponsiveWindowBreakpoints({
+    required this.compact,
+    required this.medium,
+    required this.expanded,
+    required this.large,
+  })  : assert(
+          large < double.infinity,
+          'Breakpoints must be finite values.',
+        ),
+        assert(
+          compact > 0,
+          'Breakpoints must be greater than 0.',
+        ),
+        assert(
+          compact < medium && medium < expanded && expanded < large,
+          'Breakpoints must be ordered from smallest to largest.',
+        );
+
+  /// Material Design 3-inspired default width breakpoints.
+  static const ResponsiveWindowBreakpoints material3 =
+      ResponsiveWindowBreakpoints(
+    compact: 600,
+    medium: 840,
+    expanded: 1200,
+    large: 1600,
+  );
+
+  /// The upper width boundary for [ResponsiveWindowCategory.compact].
+  ///
+  /// Widths smaller than this value are classified as
+  /// [ResponsiveWindowCategory.compact].
+  final double compact;
+
+  /// The upper width boundary for [ResponsiveWindowCategory.medium].
+  ///
+  /// Widths greater than or equal to [compact] and smaller than [medium] are
+  /// classified as [ResponsiveWindowCategory.medium].
+  final double medium;
+
+  /// The upper width boundary for [ResponsiveWindowCategory.expanded].
+  ///
+  /// Widths greater than or equal to [medium] and smaller than [expanded] are
+  /// classified as [ResponsiveWindowCategory.expanded].
+  final double expanded;
+
+  /// The upper width boundary for [ResponsiveWindowCategory.large].
+  ///
+  /// Widths greater than or equal to [expanded] and smaller than [large] are
+  /// classified as [ResponsiveWindowCategory.large]. Widths greater than or
+  /// equal to [large] are classified as [ResponsiveWindowCategory.extraLarge].
+  final double large;
+
+  /// Returns the responsive category for the given [width].
+  ResponsiveWindowCategory categoryForWidth(double width) {
+    if (width < compact) return ResponsiveWindowCategory.compact;
+    if (width < medium) return ResponsiveWindowCategory.medium;
+    if (width < expanded) return ResponsiveWindowCategory.expanded;
+    if (width < large) return ResponsiveWindowCategory.large;
+    return ResponsiveWindowCategory.extraLarge;
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ResponsiveWindowBreakpoints &&
+          runtimeType == other.runtimeType &&
+          compact == other.compact &&
+          medium == other.medium &&
+          expanded == other.expanded &&
+          large == other.large;
+
+  @override
+  int get hashCode => Object.hash(
+        compact,
+        medium,
+        expanded,
+        large,
+      );
+
+  @override
+  String toString() {
+    return 'ResponsiveWindowBreakpoints('
+        'compact: $compact, '
+        'medium: $medium, '
+        'expanded: $expanded, '
+        'large: $large'
+        ')';
+  }
+}
+
 /// Immutable layout data for the current responsive app window scope.
 @immutable
 final class ResponsiveWindowData {
@@ -50,24 +144,8 @@ final class ResponsiveWindowData {
   const ResponsiveWindowData({
     required this.width,
     required this.height,
-    required this.compactBreakpoint,
-    required this.mediumBreakpoint,
-    required this.expandedBreakpoint,
-    required this.largeBreakpoint,
-  })  : assert(
-          largeBreakpoint < double.infinity,
-          'Breakpoints must be finite values.',
-        ),
-        assert(
-          compactBreakpoint > 0,
-          'Breakpoints must be greater than 0.',
-        ),
-        assert(
-          compactBreakpoint < mediumBreakpoint &&
-              mediumBreakpoint < expandedBreakpoint &&
-              expandedBreakpoint < largeBreakpoint,
-          'Breakpoints must be ordered from smallest to largest.',
-        );
+    required this.breakpoints,
+  });
 
   /// The maximum width available to the current app window scope.
   final double width;
@@ -75,23 +153,26 @@ final class ResponsiveWindowData {
   /// The maximum height available to the current app window scope.
   final double height;
 
+  /// The breakpoints used to classify the current available width.
+  final ResponsiveWindowBreakpoints breakpoints;
+
   /// The upper width boundary for [ResponsiveWindowCategory.compact].
   ///
   /// Widths smaller than this value are classified as
   /// [ResponsiveWindowCategory.compact].
-  final double compactBreakpoint;
+  double get compactBreakpoint => breakpoints.compact;
 
   /// The upper width boundary for [ResponsiveWindowCategory.medium].
   ///
   /// Widths greater than or equal to [compactBreakpoint] and smaller than
   /// [mediumBreakpoint] are classified as [ResponsiveWindowCategory.medium].
-  final double mediumBreakpoint;
+  double get mediumBreakpoint => breakpoints.medium;
 
   /// The upper width boundary for [ResponsiveWindowCategory.expanded].
   ///
   /// Widths greater than or equal to [mediumBreakpoint] and smaller than
   /// [expandedBreakpoint] are classified as [ResponsiveWindowCategory.expanded].
-  final double expandedBreakpoint;
+  double get expandedBreakpoint => breakpoints.expanded;
 
   /// The upper width boundary for [ResponsiveWindowCategory.large].
   ///
@@ -99,7 +180,7 @@ final class ResponsiveWindowData {
   /// [largeBreakpoint] are classified as [ResponsiveWindowCategory.large].
   /// Widths greater than or equal to [largeBreakpoint] are classified as
   /// [ResponsiveWindowCategory.extraLarge].
-  final double largeBreakpoint;
+  double get largeBreakpoint => breakpoints.large;
 
   /// Returns the nearest [ResponsiveWindowData] from the widget tree, if any.
   ///
@@ -152,11 +233,7 @@ final class ResponsiveWindowData {
 
   /// The responsive category for the current width.
   ResponsiveWindowCategory get category {
-    if (isCompact) return ResponsiveWindowCategory.compact;
-    if (isMedium) return ResponsiveWindowCategory.medium;
-    if (isExpanded) return ResponsiveWindowCategory.expanded;
-    if (isLarge) return ResponsiveWindowCategory.large;
-    return ResponsiveWindowCategory.extraLarge;
+    return breakpoints.categoryForWidth(width);
   }
 
   /// The ordinal position of the current category.
@@ -183,20 +260,24 @@ final class ResponsiveWindowData {
           runtimeType == other.runtimeType &&
           width == other.width &&
           height == other.height &&
-          compactBreakpoint == other.compactBreakpoint &&
-          mediumBreakpoint == other.mediumBreakpoint &&
-          expandedBreakpoint == other.expandedBreakpoint &&
-          largeBreakpoint == other.largeBreakpoint;
+          breakpoints == other.breakpoints;
 
   @override
   int get hashCode => Object.hash(
         width,
         height,
-        compactBreakpoint,
-        mediumBreakpoint,
-        expandedBreakpoint,
-        largeBreakpoint,
+        breakpoints,
       );
+
+  @override
+  String toString() {
+    return 'ResponsiveWindowData('
+        'width: $width, '
+        'height: $height, '
+        'category: $category, '
+        'breakpoints: $breakpoints'
+        ')';
+  }
 }
 
 class _ResponsiveWindowProvider extends InheritedWidget {
@@ -222,7 +303,8 @@ class _ResponsiveWindowProvider extends InheritedWidget {
 /// constraints. When placed at the root, this usually represents the current
 /// Flutter app window size.
 ///
-/// The default width breakpoints are inspired by Material Design 3:
+/// The default width breakpoints are defined by
+/// [ResponsiveWindowBreakpoints.material3]:
 ///
 /// - compact: widths under 600 logical pixels
 /// - medium: widths from 600 to 839 logical pixels
@@ -236,77 +318,20 @@ class _ResponsiveWindowProvider extends InheritedWidget {
 /// use a dedicated window management package when you need to configure the
 /// physical window size, minimum size, title, or position.
 class ResponsiveWindow extends StatelessWidget {
-  /// The default upper width boundary for compact layouts.
-  ///
-  /// Matches the Material Design 3 compact upper boundary of 600 logical pixels.
-  static const double defaultCompactBreakpoint = 600.0;
-
-  /// The default upper width boundary for medium layouts.
-  ///
-  /// Matches the Material Design 3 medium upper boundary of 840 logical pixels.
-  static const double defaultMediumBreakpoint = 840.0;
-
-  /// The default upper width boundary for expanded layouts.
-  ///
-  /// Matches the Material Design 3 expanded upper boundary of 1200 logical pixels.
-  static const double defaultExpandedBreakpoint = 1200.0;
-
-  /// The default upper width boundary for large layouts.
-  ///
-  /// Matches the Material Design 3 large upper boundary of 1600 logical pixels.
-  static const double defaultLargeBreakpoint = 1600.0;
-
   /// Creates a responsive app window scope.
   const ResponsiveWindow({
     super.key,
     required this.child,
-    this.compactBreakpoint = ResponsiveWindow.defaultCompactBreakpoint,
-    this.mediumBreakpoint = ResponsiveWindow.defaultMediumBreakpoint,
-    this.expandedBreakpoint = ResponsiveWindow.defaultExpandedBreakpoint,
-    this.largeBreakpoint = ResponsiveWindow.defaultLargeBreakpoint,
-  })  : assert(
-          largeBreakpoint < double.infinity,
-          'Breakpoints must be finite values.',
-        ),
-        assert(
-          compactBreakpoint > 0,
-          'Breakpoints must be greater than 0.',
-        ),
-        assert(
-          compactBreakpoint < mediumBreakpoint &&
-              mediumBreakpoint < expandedBreakpoint &&
-              expandedBreakpoint < largeBreakpoint,
-          'Breakpoints must be ordered from smallest to largest.',
-        );
+    this.breakpoints = ResponsiveWindowBreakpoints.material3,
+  });
 
   /// The child widget that receives access to [ResponsiveWindowData].
   ///
   /// This is typically a `MaterialApp`, `CupertinoApp`, or `WidgetsApp`.
   final Widget child;
 
-  /// The upper width boundary for compact layouts.
-  ///
-  /// Widths smaller than this value are classified as compact.
-  final double compactBreakpoint;
-
-  /// The upper width boundary for medium layouts.
-  ///
-  /// Widths greater than or equal to [compactBreakpoint] and smaller than
-  /// [mediumBreakpoint] are classified as medium.
-  final double mediumBreakpoint;
-
-  /// The upper width boundary for expanded layouts.
-  ///
-  /// Widths greater than or equal to [mediumBreakpoint] and smaller than
-  /// [expandedBreakpoint] are classified as expanded.
-  final double expandedBreakpoint;
-
-  /// The upper width boundary for large layouts.
-  ///
-  /// Widths greater than or equal to [expandedBreakpoint] and smaller than
-  /// [largeBreakpoint] are classified as large. Widths greater than or equal to
-  /// [largeBreakpoint] are classified as extra-large.
-  final double largeBreakpoint;
+  /// The width breakpoints used to classify the available app window width.
+  final ResponsiveWindowBreakpoints breakpoints;
 
   @override
   Widget build(BuildContext context) {
@@ -322,10 +347,7 @@ class ResponsiveWindow extends StatelessWidget {
           windowData: ResponsiveWindowData(
             width: constraints.maxWidth,
             height: constraints.maxHeight,
-            compactBreakpoint: compactBreakpoint,
-            mediumBreakpoint: mediumBreakpoint,
-            expandedBreakpoint: expandedBreakpoint,
-            largeBreakpoint: largeBreakpoint,
+            breakpoints: breakpoints,
           ),
           child: child,
         );
@@ -456,7 +478,7 @@ typedef ResponsiveWindowWidgetBuilder = Widget Function(
 /// configured category, following the same behavior as [ResponsiveWindowValue].
 class ResponsiveWindowBuilder extends StatelessWidget {
   /// The default transition duration used by [ResponsiveWindowBuilder.animated].
-  static const Duration defaultTransitionDuration = Duration(milliseconds: 260);
+  static const Duration defaultTransitionDuration = Duration(milliseconds: 220);
 
   /// Creates a responsive widget builder without transitions.
   const ResponsiveWindowBuilder({

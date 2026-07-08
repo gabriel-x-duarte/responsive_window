@@ -1,8 +1,16 @@
-## 1.2.0
+## 2.0.0
 
+* BREAKING: replace individual `ResponsiveWindow` breakpoint parameters with `ResponsiveWindowBreakpoints`
+* BREAKING: replace individual `ResponsiveWindowData` breakpoint constructor parameters with `breakpoints`
+* FEAT: add `ResponsiveWindowBreakpoints` with Material Design 3-inspired preset
 * FEAT: add `isAtLeast` and `isAtMost` category helpers
+* FEAT: add debug-friendly `toString` output for responsive data and breakpoints
+* REFACTOR: centralize breakpoint validation and width classification
+* REFACTOR: reduce default animated builder transition duration to 220ms
+* DOCS: update breakpoint configuration documentation
 * DOCS: explain category helper usage
 * DOCS: clarify `ResponsiveWindowValue<Widget>` versus `ResponsiveWindowBuilder`
+* TEST: add coverage for breakpoint configuration
 * TEST: add coverage for category comparison helpers
 
 ## 1.1.1

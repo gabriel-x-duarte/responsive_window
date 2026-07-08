@@ -12,10 +12,10 @@ device types.
 - Supports `compact`, `medium`, `expanded`, `large`, and `extraLarge`
 - Access responsive window data from `BuildContext`
 - Provides window width, height, Flutter `Size`, category, and boolean helpers
+- Provides breakpoint configuration through `ResponsiveWindowBreakpoints`
 - Resolves responsive values with breakpoint fallbacks
 - Compares responsive categories with `isAtLeast` and `isAtMost`
 - Builds responsive widgets with optional animated transitions
-- Customizable breakpoints
 - Uses Flutter widgets only, with no dependency on Material widgets
 - Does not configure native desktop windows
 
@@ -37,6 +37,9 @@ A wide tablet or desktop window can be classified as `expanded`, `large`, or
 | `expanded` | `>= 840 && < 1200` |
 | `large` | `>= 1200 && < 1600` |
 | `extraLarge` | `>= 1600` |
+
+The default values are also available as
+`ResponsiveWindowBreakpoints.material3` when you want to pass them explicitly.
 
 Reference: [Material Design 3 breakpoints](https://m3.material.io/foundations/layout/breakpoints/overview).
 
@@ -105,6 +108,7 @@ Available properties and helpers:
 - `windowData.width`
 - `windowData.height`
 - `windowData.size`
+- `windowData.breakpoints`
 - `windowData.category`
 - `windowData.isCompact`
 - `windowData.isMedium`
@@ -115,6 +119,10 @@ Available properties and helpers:
 - `windowData.isAtMost(category)`
 
 `windowData.size` returns the current app window dimensions as a Flutter `Size`.
+
+For convenience, `ResponsiveWindowData` also exposes the configured breakpoint
+boundaries through `compactBreakpoint`, `mediumBreakpoint`,
+`expandedBreakpoint`, and `largeBreakpoint`.
 
 #### Use the responsive category
 
@@ -332,6 +340,8 @@ layout branches.
 Use `ResponsiveWindowBuilder.animated` when switching between responsive layouts
 should be animated.
 
+The default transition duration is 220 milliseconds.
+
 ```dart
 ResponsiveWindowBuilder.animated(
   compact: (context, windowData) {
@@ -381,16 +391,21 @@ You can customize the width breakpoints when wrapping your app.
 
 ```dart
 const ResponsiveWindow(
-  compactBreakpoint: 640,
-  mediumBreakpoint: 900,
-  expandedBreakpoint: 1280,
-  largeBreakpoint: 1680,
+  breakpoints: ResponsiveWindowBreakpoints(
+    compact: 640,
+    medium: 900,
+    expanded: 1280,
+    large: 1680,
+  ),
   child: App(),
 )
 ```
 
 Breakpoints must be finite values greater than 0 and ordered from smallest to
 largest.
+
+The values represent upper width boundaries. For example, with `compact: 640`,
+widths smaller than `640` are classified as `compact`.
 
 ## Advanced Scope Usage
 

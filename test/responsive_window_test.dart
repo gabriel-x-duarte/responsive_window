@@ -6,18 +6,13 @@ void main() {
   ResponsiveWindowData dataForWidth(
     double width, {
     double height = 600,
-    double compactBreakpoint = ResponsiveWindow.defaultCompactBreakpoint,
-    double mediumBreakpoint = ResponsiveWindow.defaultMediumBreakpoint,
-    double expandedBreakpoint = ResponsiveWindow.defaultExpandedBreakpoint,
-    double largeBreakpoint = ResponsiveWindow.defaultLargeBreakpoint,
+    ResponsiveWindowBreakpoints breakpoints =
+        ResponsiveWindowBreakpoints.material3,
   }) {
     return ResponsiveWindowData(
       width: width,
       height: height,
-      compactBreakpoint: compactBreakpoint,
-      mediumBreakpoint: mediumBreakpoint,
-      expandedBreakpoint: expandedBreakpoint,
-      largeBreakpoint: largeBreakpoint,
+      breakpoints: breakpoints,
     );
   }
 
@@ -34,6 +29,8 @@ void main() {
     required double width,
     required double height,
     required Widget child,
+    ResponsiveWindowBreakpoints breakpoints =
+        ResponsiveWindowBreakpoints.material3,
   }) {
     return testDirectionality(
       child: Center(
@@ -41,6 +38,7 @@ void main() {
           width: width,
           height: height,
           child: ResponsiveWindow(
+            breakpoints: breakpoints,
             child: child,
           ),
         ),
@@ -48,11 +46,176 @@ void main() {
     );
   }
 
+  group('ResponsiveWindowBreakpoints', () {
+    test('exposes Material Design 3 default breakpoints', () {
+      expect(ResponsiveWindowBreakpoints.material3.compact, 600);
+      expect(ResponsiveWindowBreakpoints.material3.medium, 840);
+      expect(ResponsiveWindowBreakpoints.material3.expanded, 1200);
+      expect(ResponsiveWindowBreakpoints.material3.large, 1600);
+    });
+
+    test(
+      'classifies widths using inclusive lower bounds and exclusive upper bounds',
+      () {
+        expect(
+          ResponsiveWindowBreakpoints.material3.categoryForWidth(599.99),
+          ResponsiveWindowCategory.compact,
+        );
+
+        expect(
+          ResponsiveWindowBreakpoints.material3.categoryForWidth(600),
+          ResponsiveWindowCategory.medium,
+        );
+
+        expect(
+          ResponsiveWindowBreakpoints.material3.categoryForWidth(840),
+          ResponsiveWindowCategory.expanded,
+        );
+
+        expect(
+          ResponsiveWindowBreakpoints.material3.categoryForWidth(1200),
+          ResponsiveWindowCategory.large,
+        );
+
+        expect(
+          ResponsiveWindowBreakpoints.material3.categoryForWidth(1600),
+          ResponsiveWindowCategory.extraLarge,
+        );
+      },
+    );
+
+    test('classifies widths using custom breakpoints', () {
+      const ResponsiveWindowBreakpoints breakpoints =
+          ResponsiveWindowBreakpoints(
+        compact: 640,
+        medium: 900,
+        expanded: 1280,
+        large: 1680,
+      );
+
+      expect(
+        breakpoints.categoryForWidth(639.99),
+        ResponsiveWindowCategory.compact,
+      );
+
+      expect(
+        breakpoints.categoryForWidth(640),
+        ResponsiveWindowCategory.medium,
+      );
+
+      expect(
+        breakpoints.categoryForWidth(900),
+        ResponsiveWindowCategory.expanded,
+      );
+
+      expect(
+        breakpoints.categoryForWidth(1280),
+        ResponsiveWindowCategory.large,
+      );
+
+      expect(
+        breakpoints.categoryForWidth(1680),
+        ResponsiveWindowCategory.extraLarge,
+      );
+    });
+
+    test('supports value equality', () {
+      const ResponsiveWindowBreakpoints first = ResponsiveWindowBreakpoints(
+        compact: 600,
+        medium: 840,
+        expanded: 1200,
+        large: 1600,
+      );
+
+      const ResponsiveWindowBreakpoints second = ResponsiveWindowBreakpoints(
+        compact: 600,
+        medium: 840,
+        expanded: 1200,
+        large: 1600,
+      );
+
+      const ResponsiveWindowBreakpoints third = ResponsiveWindowBreakpoints(
+        compact: 640,
+        medium: 900,
+        expanded: 1280,
+        large: 1680,
+      );
+
+      expect(first, second);
+      expect(first.hashCode, second.hashCode);
+      expect(first, isNot(third));
+    });
+
+    test('returns a debug-friendly string representation', () {
+      expect(
+        ResponsiveWindowBreakpoints.material3.toString(),
+        'ResponsiveWindowBreakpoints(compact: 600.0, medium: 840.0, expanded: 1200.0, large: 1600.0)',
+      );
+    });
+
+    test('asserts when breakpoints are not finite', () {
+      expect(
+        () => ResponsiveWindowBreakpoints(
+          compact: 600,
+          medium: 840,
+          expanded: 1200,
+          large: double.infinity,
+        ),
+        throwsAssertionError,
+      );
+    });
+
+    test('asserts when compact breakpoint is not greater than 0', () {
+      expect(
+        () => ResponsiveWindowBreakpoints(
+          compact: 0,
+          medium: 840,
+          expanded: 1200,
+          large: 1600,
+        ),
+        throwsAssertionError,
+      );
+    });
+
+    test('asserts when breakpoints are not ordered', () {
+      expect(
+        () => ResponsiveWindowBreakpoints(
+          compact: 840,
+          medium: 600,
+          expanded: 1200,
+          large: 1600,
+        ),
+        throwsAssertionError,
+      );
+    });
+  });
+
   group('ResponsiveWindowData', () {
     test('returns the current app window size as a Flutter Size', () {
       final ResponsiveWindowData data = dataForWidth(800, height: 480);
 
       expect(data.size, const Size(800, 480));
+    });
+
+    test('exposes the configured breakpoints', () {
+      const ResponsiveWindowBreakpoints breakpoints =
+          ResponsiveWindowBreakpoints(
+        compact: 640,
+        medium: 900,
+        expanded: 1280,
+        large: 1680,
+      );
+
+      final ResponsiveWindowData data = dataForWidth(
+        920,
+        breakpoints: breakpoints,
+      );
+
+      expect(data.breakpoints, breakpoints);
+      expect(data.compactBreakpoint, 640);
+      expect(data.mediumBreakpoint, 900);
+      expect(data.expandedBreakpoint, 1280);
+      expect(data.largeBreakpoint, 1680);
     });
 
     test('classifies compact widths', () {
@@ -113,10 +276,12 @@ void main() {
     test('classifies widths using custom breakpoints', () {
       final ResponsiveWindowData data = dataForWidth(
         920,
-        compactBreakpoint: 640,
-        mediumBreakpoint: 900,
-        expandedBreakpoint: 1280,
-        largeBreakpoint: 1680,
+        breakpoints: const ResponsiveWindowBreakpoints(
+          compact: 640,
+          medium: 900,
+          expanded: 1280,
+          large: 1680,
+        ),
       );
 
       expect(data.category, ResponsiveWindowCategory.expanded);
@@ -179,96 +344,53 @@ void main() {
       expect(first, isNot(third));
     });
 
-    test('asserts when breakpoints are not finite', () {
-      expect(
-        () => ResponsiveWindowData(
-          width: 800,
-          height: 600,
-          compactBreakpoint: 600,
-          mediumBreakpoint: 840,
-          expandedBreakpoint: 1200,
-          largeBreakpoint: double.infinity,
+    test('includes breakpoints in value equality', () {
+      final ResponsiveWindowData first = dataForWidth(
+        800,
+        breakpoints: const ResponsiveWindowBreakpoints(
+          compact: 600,
+          medium: 840,
+          expanded: 1200,
+          large: 1600,
         ),
-        throwsAssertionError,
       );
+
+      final ResponsiveWindowData second = dataForWidth(
+        800,
+        breakpoints: const ResponsiveWindowBreakpoints(
+          compact: 600,
+          medium: 840,
+          expanded: 1200,
+          large: 1600,
+        ),
+      );
+
+      final ResponsiveWindowData third = dataForWidth(
+        800,
+        breakpoints: const ResponsiveWindowBreakpoints(
+          compact: 640,
+          medium: 900,
+          expanded: 1280,
+          large: 1680,
+        ),
+      );
+
+      expect(first, second);
+      expect(first.hashCode, second.hashCode);
+      expect(first, isNot(third));
     });
 
-    test('asserts when compactBreakpoint is not greater than 0', () {
-      expect(
-        () => ResponsiveWindowData(
-          width: 800,
-          height: 600,
-          compactBreakpoint: 0,
-          mediumBreakpoint: 840,
-          expandedBreakpoint: 1200,
-          largeBreakpoint: 1600,
-        ),
-        throwsAssertionError,
-      );
-    });
+    test('returns a debug-friendly string representation', () {
+      final ResponsiveWindowData data = dataForWidth(840);
 
-    test('asserts when breakpoints are not ordered', () {
       expect(
-        () => ResponsiveWindowData(
-          width: 800,
-          height: 600,
-          compactBreakpoint: 840,
-          mediumBreakpoint: 600,
-          expandedBreakpoint: 1200,
-          largeBreakpoint: 1600,
-        ),
-        throwsAssertionError,
+        data.toString(),
+        'ResponsiveWindowData(width: 840.0, height: 600.0, category: ResponsiveWindowCategory.expanded, breakpoints: ResponsiveWindowBreakpoints(compact: 600.0, medium: 840.0, expanded: 1200.0, large: 1600.0))',
       );
     });
   });
 
   group('ResponsiveWindow', () {
-    test('exposes default breakpoint constants', () {
-      expect(ResponsiveWindow.defaultCompactBreakpoint, 600);
-      expect(ResponsiveWindow.defaultMediumBreakpoint, 840);
-      expect(ResponsiveWindow.defaultExpandedBreakpoint, 1200);
-      expect(ResponsiveWindow.defaultLargeBreakpoint, 1600);
-    });
-
-    test('asserts when breakpoints are not finite', () {
-      expect(
-        () => ResponsiveWindow(
-          compactBreakpoint: 600,
-          mediumBreakpoint: 840,
-          expandedBreakpoint: 1200,
-          largeBreakpoint: double.infinity,
-          child: const SizedBox(),
-        ),
-        throwsAssertionError,
-      );
-    });
-
-    test('asserts when compactBreakpoint is not greater than 0', () {
-      expect(
-        () => ResponsiveWindow(
-          compactBreakpoint: 0,
-          mediumBreakpoint: 840,
-          expandedBreakpoint: 1200,
-          largeBreakpoint: 1600,
-          child: const SizedBox(),
-        ),
-        throwsAssertionError,
-      );
-    });
-
-    test('asserts when breakpoints are not ordered', () {
-      expect(
-        () => ResponsiveWindow(
-          compactBreakpoint: 840,
-          mediumBreakpoint: 600,
-          expandedBreakpoint: 1200,
-          largeBreakpoint: 1600,
-          child: const SizedBox(),
-        ),
-        throwsAssertionError,
-      );
-    });
-
     testWidgets(
       'asserts when placed where height constraints are unbounded',
       (tester) async {
@@ -324,11 +446,20 @@ void main() {
       expect(windowData.width, 700);
       expect(windowData.height, 500);
       expect(windowData.size, const Size(700, 500));
+      expect(windowData.breakpoints, ResponsiveWindowBreakpoints.material3);
       expect(windowData.category, ResponsiveWindowCategory.medium);
     });
 
     testWidgets('uses custom breakpoints from ResponsiveWindow',
         (tester) async {
+      const ResponsiveWindowBreakpoints breakpoints =
+          ResponsiveWindowBreakpoints(
+        compact: 640,
+        medium: 900,
+        expanded: 1280,
+        large: 1680,
+      );
+
       tester.view.devicePixelRatio = 1;
       tester.view.physicalSize = const Size(1000, 600);
 
@@ -346,10 +477,7 @@ void main() {
               width: 920,
               height: 500,
               child: ResponsiveWindow(
-                compactBreakpoint: 640,
-                mediumBreakpoint: 900,
-                expandedBreakpoint: 1280,
-                largeBreakpoint: 1680,
+                breakpoints: breakpoints,
                 child: Builder(
                   builder: (context) {
                     windowData = context.windowData;
@@ -365,6 +493,7 @@ void main() {
 
       expect(windowData.width, 920);
       expect(windowData.height, 500);
+      expect(windowData.breakpoints, breakpoints);
       expect(windowData.compactBreakpoint, 640);
       expect(windowData.mediumBreakpoint, 900);
       expect(windowData.expandedBreakpoint, 1280);
@@ -541,7 +670,7 @@ void main() {
     test('exposes default transition duration', () {
       expect(
         ResponsiveWindowBuilder.defaultTransitionDuration,
-        const Duration(milliseconds: 260),
+        const Duration(milliseconds: 220),
       );
     });
 
