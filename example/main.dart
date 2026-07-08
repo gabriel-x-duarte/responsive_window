@@ -302,6 +302,12 @@ class _WindowDataCardPage extends StatelessWidget {
       expanded: EdgeInsets.all(36),
     ).resolveWith(windowData);
 
+    final EdgeInsetsGeometry cardPadding = windowData.isAtLeast(
+      ResponsiveWindowCategory.expanded,
+    )
+        ? const EdgeInsets.all(24)
+        : const EdgeInsets.all(16);
+
     final Color foregroundColor =
         ThemeData.estimateBrightnessForColor(color) == Brightness.dark
             ? Colors.white
@@ -317,7 +323,7 @@ class _WindowDataCardPage extends StatelessWidget {
               child: Card(
                 color: color,
                 child: Padding(
-                  padding: const EdgeInsets.all(24),
+                  padding: cardPadding,
                   child: DefaultTextStyle.merge(
                     style: TextStyle(color: foregroundColor),
                     textAlign: TextAlign.center,

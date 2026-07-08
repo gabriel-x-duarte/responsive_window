@@ -159,6 +159,23 @@ final class ResponsiveWindowData {
     return ResponsiveWindowCategory.extraLarge;
   }
 
+  /// The ordinal position of the current category.
+  ///
+  /// [ResponsiveWindowCategory] values are declared from the smallest width
+  /// category to the largest one. Their enum indexes represent that responsive
+  /// order.
+  int get _categoryIndex => category.index;
+
+  /// Whether the current category is equal to or larger than [minimumCategory].
+  bool isAtLeast(ResponsiveWindowCategory minimumCategory) {
+    return _categoryIndex >= minimumCategory.index;
+  }
+
+  /// Whether the current category is equal to or smaller than [maximumCategory].
+  bool isAtMost(ResponsiveWindowCategory maximumCategory) {
+    return _categoryIndex <= maximumCategory.index;
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

@@ -13,6 +13,7 @@ device types.
 - Access responsive window data from `BuildContext`
 - Provides window width, height, Flutter `Size`, category, and boolean helpers
 - Resolves responsive values with breakpoint fallbacks
+- Compares responsive categories with `isAtLeast` and `isAtMost`
 - Builds responsive widgets with optional animated transitions
 - Customizable breakpoints
 - Uses Flutter widgets only, with no dependency on Material widgets
@@ -110,6 +111,8 @@ Available properties and helpers:
 - `windowData.isExpanded`
 - `windowData.isLarge`
 - `windowData.isExtraLarge`
+- `windowData.isAtLeast(category)`
+- `windowData.isAtMost(category)`
 
 `windowData.size` returns the current app window dimensions as a Flutter `Size`.
 
@@ -193,6 +196,107 @@ final double padding = const ResponsiveWindowValue<double>(
 ).resolveWith(windowData);
 ```
 
+You can also use `ResponsiveWindowValue<Widget>` when you need to switch
+between widgets.
+
+```dart
+Widget build(BuildContext context) {
+  final Widget navigation = const ResponsiveWindowValue<Widget>(
+    compact: AppBottomNavigation(),
+    expanded: AppNavigationRail(),
+  ).resolve(context);
+
+  return Scaffold(
+    body: ContentWithNavigation(
+      navigation: navigation,
+    ),
+  );
+}
+```
+
+For small local widget choices, `ResponsiveWindowValue<Widget>` is usually
+enough. For larger layout changes, prefer `ResponsiveWindowBuilder`.
+
+#### Compare responsive categories
+
+Use `isAtLeast` and `isAtMost` for simple boolean decisions based on the
+responsive category order.
+
+These helpers are useful when a behavior should apply to a range of categories
+and you would otherwise need to combine multiple boolean helpers in one
+condition.
+
+Use `isAtLeast` when a behavior should apply from a category upward.
+
+Instead of writing:
+
+```dart
+final bool showSidebar =
+    windowData.isExpanded || windowData.isLarge || windowData.isExtraLarge;
+```
+
+You can write:
+
+```dart
+final bool showSidebar = windowData.isAtLeast(
+  ResponsiveWindowCategory.expanded,
+);
+```
+
+For example, show a sidebar on `expanded`, `large`, and `extraLarge` widths:
+
+```dart
+Widget build(BuildContext context) {
+  final ResponsiveWindowData windowData = context.windowData;
+
+  final bool showSidebar = windowData.isAtLeast(
+    ResponsiveWindowCategory.expanded,
+  );
+
+  return Row(
+    children: [
+      if (showSidebar) const Sidebar(),
+      const Expanded(child: Content()),
+    ],
+  );
+}
+```
+
+Use `isAtMost` when a behavior should apply up to a category.
+
+Instead of writing:
+
+```dart
+final bool useCompactControls = windowData.isCompact || windowData.isMedium;
+```
+
+You can write:
+
+```dart
+final bool useCompactControls = windowData.isAtMost(
+  ResponsiveWindowCategory.medium,
+);
+```
+
+For example, use compact controls on `compact` and `medium` widths:
+
+```dart
+Widget build(BuildContext context) {
+  final ResponsiveWindowData windowData = context.windowData;
+
+  final bool useCompactControls = windowData.isAtMost(
+    ResponsiveWindowCategory.medium,
+  );
+
+  return Toolbar(
+    compact: useCompactControls,
+  );
+}
+```
+
+For simple yes/no decisions, prefer `isAtLeast` or `isAtMost`. For choosing
+different values by category, use `ResponsiveWindowValue`.
+
 #### Build responsive widgets
 
 Use `ResponsiveWindowBuilder` when the widget tree should change based on the
@@ -217,6 +321,11 @@ nearest smaller configured builder.
 
 In the example above, `medium` uses the compact builder, while `large` and
 `extraLarge` use the expanded builder.
+
+Use `ResponsiveWindowBuilder` instead of `ResponsiveWindowValue<Widget>` when
+the responsive change affects a larger widget tree, needs access to
+`ResponsiveWindowData` inside the builder, or is easier to read as separate
+layout branches.
 
 #### Build responsive widgets with animation
 

@@ -1,3 +1,10 @@
+## 1.2.0
+
+* FEAT: add `isAtLeast` and `isAtMost` category helpers
+* DOCS: explain category helper usage
+* DOCS: clarify `ResponsiveWindowValue<Widget>` versus `ResponsiveWindowBuilder`
+* TEST: add coverage for category comparison helpers
+
 ## 1.1.1
 
 * FIX: validate responsive breakpoints

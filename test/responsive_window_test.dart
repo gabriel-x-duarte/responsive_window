@@ -145,6 +145,30 @@ void main() {
       );
     });
 
+    test('compares whether category is at least another category', () {
+      final ResponsiveWindowData data = dataForWidth(840);
+
+      expect(data.category, ResponsiveWindowCategory.expanded);
+
+      expect(data.isAtLeast(ResponsiveWindowCategory.compact), isTrue);
+      expect(data.isAtLeast(ResponsiveWindowCategory.medium), isTrue);
+      expect(data.isAtLeast(ResponsiveWindowCategory.expanded), isTrue);
+      expect(data.isAtLeast(ResponsiveWindowCategory.large), isFalse);
+      expect(data.isAtLeast(ResponsiveWindowCategory.extraLarge), isFalse);
+    });
+
+    test('compares whether category is at most another category', () {
+      final ResponsiveWindowData data = dataForWidth(840);
+
+      expect(data.category, ResponsiveWindowCategory.expanded);
+
+      expect(data.isAtMost(ResponsiveWindowCategory.compact), isFalse);
+      expect(data.isAtMost(ResponsiveWindowCategory.medium), isFalse);
+      expect(data.isAtMost(ResponsiveWindowCategory.expanded), isTrue);
+      expect(data.isAtMost(ResponsiveWindowCategory.large), isTrue);
+      expect(data.isAtMost(ResponsiveWindowCategory.extraLarge), isTrue);
+    });
+
     test('supports value equality', () {
       final ResponsiveWindowData first = dataForWidth(800, height: 480);
       final ResponsiveWindowData second = dataForWidth(800, height: 480);
