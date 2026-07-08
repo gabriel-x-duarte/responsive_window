@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-/// Represents the responsive category for the available app window width.
+/// Represents the responsive category for the available window width.
 ///
 /// This follows the compact, medium, expanded, large, and extra-large width
 /// breakpoint names from Material Design 3.
@@ -8,38 +8,42 @@ import 'package:flutter/widgets.dart';
 /// It does not identify the physical device type. Device examples from Material
 /// Design 3 are common examples for each width range, not runtime device
 /// detection.
+///
+/// The width ranges documented for each value refer to the default
+/// [ResponsiveWindowBreakpoints.material3] breakpoints. Custom breakpoints can
+/// change the actual width range represented by each category.
 enum ResponsiveWindowCategory {
   /// Compact width.
   ///
-  /// Represents widths under 600 logical pixels.
+  /// With the default breakpoints, represents widths under 600 logical pixels.
   /// Commonly associated with phones in portrait orientation.
   compact,
 
   /// Medium width.
   ///
-  /// Represents widths from 600 to 839 logical pixels.
-  /// Commonly associated with tablets in portrait orientation and unfolded
-  /// foldables in portrait orientation.
+  /// With the default breakpoints, represents widths from 600 to below 840
+  /// logical pixels. Commonly associated with tablets in portrait orientation
+  /// and unfolded foldables in portrait orientation.
   medium,
 
   /// Expanded width.
   ///
-  /// Represents widths from 840 to 1199 logical pixels.
-  /// Commonly associated with phones in landscape orientation, tablets in
-  /// landscape orientation, unfolded foldables in landscape orientation, and
-  /// desktop windows.
+  /// With the default breakpoints, represents widths from 840 to below 1200
+  /// logical pixels. Commonly associated with phones in landscape orientation,
+  /// tablets in landscape orientation, unfolded foldables in landscape
+  /// orientation, and desktop windows.
   expanded,
 
   /// Large width.
   ///
-  /// Represents widths from 1200 to 1599 logical pixels.
-  /// Commonly associated with desktop windows.
+  /// With the default breakpoints, represents widths from 1200 to below 1600
+  /// logical pixels. Commonly associated with desktop windows.
   large,
 
   /// Extra-large width.
   ///
-  /// Represents widths of 1600 logical pixels and above.
-  /// Commonly associated with desktop windows and ultra-wide monitors.
+  /// With the default breakpoints, represents widths of 1600 logical pixels and
+  /// above. Commonly associated with desktop windows and ultra-wide monitors.
   extraLarge,
 }
 
@@ -137,20 +141,20 @@ final class ResponsiveWindowBreakpoints {
   }
 }
 
-/// Immutable layout data for the current responsive app window scope.
+/// Immutable layout data for the current responsive window scope.
 @immutable
 final class ResponsiveWindowData {
-  /// Creates responsive layout data for the current app window scope.
+  /// Creates responsive layout data for the current window scope.
   const ResponsiveWindowData({
     required this.width,
     required this.height,
     required this.breakpoints,
   });
 
-  /// The maximum width available to the current app window scope.
+  /// The maximum width available to the current window scope.
   final double width;
 
-  /// The maximum height available to the current app window scope.
+  /// The maximum height available to the current window scope.
   final double height;
 
   /// The breakpoints used to classify the current available width.
@@ -209,7 +213,7 @@ final class ResponsiveWindowData {
     return windowData;
   }
 
-  /// The current app window size as a Flutter [Size].
+  /// The current window scope size as a Flutter [Size].
   Size get size => Size(width, height);
 
   /// Whether the current width is smaller than [compactBreakpoint].
@@ -299,17 +303,17 @@ class _ResponsiveWindowProvider extends InheritedWidget {
 /// This widget is intended to wrap the root app widget, usually above
 /// `MaterialApp`, `CupertinoApp`, or `WidgetsApp`.
 ///
-/// It uses [LayoutBuilder], so it measures the available space from its parent
-/// constraints. When placed at the root, this usually represents the current
-/// Flutter app window size.
+/// It uses [LayoutBuilder], so it reads the layout constraints provided by its
+/// parent. When placed at the root, this usually represents the current Flutter
+/// app window size.
 ///
 /// The default width breakpoints are defined by
 /// [ResponsiveWindowBreakpoints.material3]:
 ///
 /// - compact: widths under 600 logical pixels
-/// - medium: widths from 600 to 839 logical pixels
-/// - expanded: widths from 840 to 1199 logical pixels
-/// - large: widths from 1200 to 1599 logical pixels
+/// - medium: widths from 600 to below 840 logical pixels
+/// - expanded: widths from 840 to below 1200 logical pixels
+/// - large: widths from 1200 to below 1600 logical pixels
 /// - extraLarge: widths from 1600 logical pixels and above
 ///
 /// See [Material Design 3 breakpoints](https://m3.material.io/foundations/layout/breakpoints/overview).
@@ -330,7 +334,7 @@ class ResponsiveWindow extends StatelessWidget {
   /// This is typically a `MaterialApp`, `CupertinoApp`, or `WidgetsApp`.
   final Widget child;
 
-  /// The width breakpoints used to classify the available app window width.
+  /// The width breakpoints used to classify the available window width.
   final ResponsiveWindowBreakpoints breakpoints;
 
   @override
@@ -583,7 +587,7 @@ class ResponsiveWindowBuilder extends StatelessWidget {
   }
 }
 
-/// Convenience extension for accessing [ResponsiveWindowData] from a BuildContext.
+/// Convenience extension for accessing [ResponsiveWindowData] from a [BuildContext].
 extension BuildContextResponsiveWindow on BuildContext {
   /// Returns the nearest [ResponsiveWindowData].
   ///

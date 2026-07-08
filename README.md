@@ -11,7 +11,7 @@ device types.
 - Material Design 3-inspired width breakpoints
 - Supports `compact`, `medium`, `expanded`, `large`, and `extraLarge`
 - Access responsive window data from `BuildContext`
-- Provides window width, height, Flutter `Size`, category, and boolean helpers
+- Provides window `width`, `height`, Flutter `Size`, `category`, and boolean helpers
 - Provides breakpoint configuration through `ResponsiveWindowBreakpoints`
 - Resolves responsive values with breakpoint fallbacks
 - Compares responsive categories with `isAtLeast` and `isAtMost`
@@ -23,7 +23,7 @@ device types.
 
 `ResponsiveWindow` uses Material Design 3-inspired width breakpoints by default.
 
-The responsive category is based on the available app window width. It does not
+The responsive category is based on the available window width. It does not
 detect the physical device type.
 
 A desktop window resized to a narrow width can be classified as `compact`.
@@ -327,8 +327,8 @@ Builders follow the same fallback rule as `ResponsiveWindowValue`. If the
 current category does not define a builder, `ResponsiveWindowBuilder` uses the
 nearest smaller configured builder.
 
-In the example above, `medium` uses the compact builder, while `large` and
-`extraLarge` use the expanded builder.
+In the example above, `medium` uses the `compact` builder, while `large` and
+`extraLarge` use the `expanded` builder.
 
 Use `ResponsiveWindowBuilder` instead of `ResponsiveWindowValue<Widget>` when
 the responsive change affects a larger widget tree, needs access to
@@ -387,7 +387,7 @@ ResponsiveWindowBuilder.animated(
 
 #### Custom breakpoints
 
-You can customize the width breakpoints when wrapping your app.
+You can customize the width `breakpoints` when wrapping your app.
 
 ```dart
 const ResponsiveWindow(
@@ -424,8 +424,8 @@ and height constraints that are different from the full app window.
 If the local subtree receives the same width and height constraints as the app
 window, the extra `ResponsiveWindow` is unnecessary.
 
-A local `ResponsiveWindow` cannot be placed inside a subtree where the available
-width or height constraints are unbounded.
+`ResponsiveWindow` cannot be placed inside a subtree where the available width
+or height constraints are unbounded.
 
 When multiple `ResponsiveWindow` widgets exist in the widget tree,
 `context.windowData` reads from the nearest one.
@@ -434,8 +434,8 @@ When multiple `ResponsiveWindow` widgets exist in the widget tree,
 
 `ResponsiveWindow` does not manage native desktop window behavior.
 
-It only measures the available Flutter layout constraints and provides
-responsive window data to the widget subtree.
+It only reads the available Flutter layout constraints and provides responsive
+window data to the widget subtree.
 
 For desktop apps, use a dedicated window management package when you need to
 configure the native window size, minimum size, title, or position.

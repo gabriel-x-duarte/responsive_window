@@ -1,3 +1,8 @@
+## 2.0.1
+
+* DOCS: improve README wording and inline API formatting
+* DOCS: improve public API documentation for default and custom breakpoints
+
 ## 2.0.0
 
 * BREAKING: replace individual `ResponsiveWindow` breakpoint parameters with `ResponsiveWindowBreakpoints`
