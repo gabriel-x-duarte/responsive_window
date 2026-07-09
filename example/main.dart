@@ -355,6 +355,10 @@ class _WindowDataCardPage extends StatelessWidget {
                             'Category: '
                             '${_windowCategoryLabel(windowData.category)}',
                           ),
+                          Text(
+                            'Aspect: '
+                            '${_windowAspectLabel(windowData.aspect)}',
+                          ),
                           const SizedBox(height: 24),
                           footer,
                         ],
@@ -417,5 +421,13 @@ String _windowCategoryLabel(ResponsiveWindowCategory category) {
     ResponsiveWindowCategory.expanded => 'Expanded',
     ResponsiveWindowCategory.large => 'Large',
     ResponsiveWindowCategory.extraLarge => 'Extra Large',
+  };
+}
+
+String _windowAspectLabel(ResponsiveWindowAspect aspect) {
+  return switch (aspect) {
+    ResponsiveWindowAspect.landscape => 'Landscape',
+    ResponsiveWindowAspect.portrait => 'Portrait',
+    ResponsiveWindowAspect.square => 'Square',
   };
 }

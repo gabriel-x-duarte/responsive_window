@@ -197,6 +197,33 @@ void main() {
       expect(data.size, const Size(800, 480));
     });
 
+    test('identifies landscape aspect', () {
+      final ResponsiveWindowData data = dataForWidth(800, height: 480);
+
+      expect(data.aspect, ResponsiveWindowAspect.landscape);
+      expect(data.isLandscape, isTrue);
+      expect(data.isPortrait, isFalse);
+      expect(data.isSquare, isFalse);
+    });
+
+    test('identifies portrait aspect', () {
+      final ResponsiveWindowData data = dataForWidth(480, height: 800);
+
+      expect(data.aspect, ResponsiveWindowAspect.portrait);
+      expect(data.isLandscape, isFalse);
+      expect(data.isPortrait, isTrue);
+      expect(data.isSquare, isFalse);
+    });
+
+    test('identifies square aspect', () {
+      final ResponsiveWindowData data = dataForWidth(600, height: 600);
+
+      expect(data.aspect, ResponsiveWindowAspect.square);
+      expect(data.isLandscape, isFalse);
+      expect(data.isPortrait, isFalse);
+      expect(data.isSquare, isTrue);
+    });
+
     test('exposes the configured breakpoints', () {
       const ResponsiveWindowBreakpoints breakpoints =
           ResponsiveWindowBreakpoints(
@@ -385,7 +412,7 @@ void main() {
 
       expect(
         data.toString(),
-        'ResponsiveWindowData(width: 840.0, height: 600.0, category: ResponsiveWindowCategory.expanded, breakpoints: ResponsiveWindowBreakpoints(compact: 600.0, medium: 840.0, expanded: 1200.0, large: 1600.0))',
+        'ResponsiveWindowData(width: 840.0, height: 600.0, category: ResponsiveWindowCategory.expanded, aspect: ResponsiveWindowAspect.landscape, breakpoints: ResponsiveWindowBreakpoints(compact: 600.0, medium: 840.0, expanded: 1200.0, large: 1600.0))',
       );
     });
   });
@@ -446,6 +473,10 @@ void main() {
       expect(windowData.width, 700);
       expect(windowData.height, 500);
       expect(windowData.size, const Size(700, 500));
+      expect(windowData.aspect, ResponsiveWindowAspect.landscape);
+      expect(windowData.isLandscape, isTrue);
+      expect(windowData.isPortrait, isFalse);
+      expect(windowData.isSquare, isFalse);
       expect(windowData.breakpoints, ResponsiveWindowBreakpoints.material3);
       expect(windowData.category, ResponsiveWindowCategory.medium);
     });
@@ -499,6 +530,7 @@ void main() {
       expect(windowData.expandedBreakpoint, 1280);
       expect(windowData.largeBreakpoint, 1680);
       expect(windowData.category, ResponsiveWindowCategory.expanded);
+      expect(windowData.aspect, ResponsiveWindowAspect.landscape);
     });
 
     testWidgets('maybeOf returns null when no ResponsiveWindow exists above',
@@ -572,6 +604,7 @@ void main() {
       expect(windowData.width, 500);
       expect(windowData.height, 400);
       expect(windowData.size, const Size(500, 400));
+      expect(windowData.aspect, ResponsiveWindowAspect.landscape);
       expect(windowData.category, ResponsiveWindowCategory.compact);
     });
   });
@@ -823,6 +856,7 @@ void main() {
       expect(builderData.width, 900);
       expect(builderData.height, 500);
       expect(builderData.category, ResponsiveWindowCategory.expanded);
+      expect(builderData.aspect, ResponsiveWindowAspect.landscape);
     });
   });
 

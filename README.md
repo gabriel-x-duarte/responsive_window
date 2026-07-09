@@ -13,6 +13,7 @@ device types.
 - Access responsive window data from `BuildContext`
 - Provides window `width`, `height`, Flutter `Size`, `category`, and boolean helpers
 - Provides breakpoint configuration through `ResponsiveWindowBreakpoints`
+- Provides geometric aspect helpers with `landscape`, `portrait`, and `square`
 - Resolves responsive values with breakpoint fallbacks
 - Compares responsive categories with `isAtLeast` and `isAtMost`
 - Builds responsive widgets with optional animated transitions
@@ -110,19 +111,23 @@ Available properties and helpers:
 - `windowData.size`
 - `windowData.breakpoints`
 - `windowData.category`
+- `windowData.aspect`
+- `windowData.compactBreakpoint`
+- `windowData.mediumBreakpoint`
+- `windowData.expandedBreakpoint`
+- `windowData.largeBreakpoint`
 - `windowData.isCompact`
 - `windowData.isMedium`
 - `windowData.isExpanded`
 - `windowData.isLarge`
 - `windowData.isExtraLarge`
+- `windowData.isLandscape`
+- `windowData.isPortrait`
+- `windowData.isSquare`
 - `windowData.isAtLeast(category)`
 - `windowData.isAtMost(category)`
 
 `windowData.size` returns the current app window dimensions as a Flutter `Size`.
-
-For convenience, `ResponsiveWindowData` also exposes the configured breakpoint
-boundaries through `compactBreakpoint`, `mediumBreakpoint`,
-`expandedBreakpoint`, and `largeBreakpoint`.
 
 #### Use the responsive category
 
@@ -151,6 +156,35 @@ Widget build(BuildContext context) {
   }
 }
 ```
+
+#### Use the window aspect
+
+`windowData.aspect` returns the current geometric aspect as a
+`ResponsiveWindowAspect`.
+
+```dart
+Widget build(BuildContext context) {
+  final ResponsiveWindowData windowData = context.windowData;
+
+  if (windowData.isLandscape) {
+    return const LandscapeLayout();
+  }
+
+  if (windowData.isPortrait) {
+    return const PortraitLayout();
+  }
+
+  return const SquareLayout();
+}
+```
+
+The aspect is calculated from the current responsive window scope:
+
+- `landscape`: `width > height`
+- `portrait`: `height > width`
+- `square`: `width == height`
+
+It does not identify the physical device orientation.
 
 #### Resolve responsive values
 

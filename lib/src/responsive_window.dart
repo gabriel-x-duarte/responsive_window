@@ -47,6 +47,22 @@ enum ResponsiveWindowCategory {
   extraLarge,
 }
 
+/// Represents the geometric aspect of the current responsive window scope.
+///
+/// This is based only on the current [ResponsiveWindowData.width] and
+/// [ResponsiveWindowData.height]. It does not identify the physical device
+/// orientation.
+enum ResponsiveWindowAspect {
+  /// Indicates that the current width is greater than the current height.
+  landscape,
+
+  /// Indicates that the current height is greater than the current width.
+  portrait,
+
+  /// Indicates that the current width and height are equal.
+  square,
+}
+
 /// Width breakpoints used to classify the available responsive app window size.
 @immutable
 final class ResponsiveWindowBreakpoints {
@@ -216,6 +232,25 @@ final class ResponsiveWindowData {
   /// The current window scope size as a Flutter [Size].
   Size get size => Size(width, height);
 
+  /// The geometric aspect of the current responsive window scope.
+  ///
+  /// This is based on the current [width] and [height]. It does not identify the
+  /// physical device orientation.
+  ResponsiveWindowAspect get aspect {
+    if (width > height) return ResponsiveWindowAspect.landscape;
+    if (height > width) return ResponsiveWindowAspect.portrait;
+    return ResponsiveWindowAspect.square;
+  }
+
+  /// Whether the current width is greater than the current height.
+  bool get isLandscape => aspect == ResponsiveWindowAspect.landscape;
+
+  /// Whether the current height is greater than the current width.
+  bool get isPortrait => aspect == ResponsiveWindowAspect.portrait;
+
+  /// Whether the current width and height are equal.
+  bool get isSquare => aspect == ResponsiveWindowAspect.square;
+
   /// Whether the current width is smaller than [compactBreakpoint].
   bool get isCompact => width < compactBreakpoint;
 
@@ -279,6 +314,7 @@ final class ResponsiveWindowData {
         'width: $width, '
         'height: $height, '
         'category: $category, '
+        'aspect: $aspect, '
         'breakpoints: $breakpoints'
         ')';
   }

@@ -1,6 +1,14 @@
+## 2.1.0
+
+* FEAT: add responsive window aspect classification
+* FEAT: add `isLandscape`, `isPortrait`, and `isSquare` helpers
+* DOCS: document responsive window aspect usage
+* DOCS: update example to display the current window aspect
+* TEST: add coverage for responsive window aspect behavior
+
 ## 2.0.1
 
-* DOCS: improve README wording and inline API formatting
+* DOCS: improve README documentation and inline API formatting
 * DOCS: improve public API documentation for default and custom breakpoints
 
 ## 2.0.0
