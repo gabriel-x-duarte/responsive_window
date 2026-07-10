@@ -1,3 +1,8 @@
+[![Pub Version](https://img.shields.io/pub/v/responsive_window.svg)](https://pub.dev/packages/responsive_window)
+[![Pub Points](https://img.shields.io/pub/points/responsive_window)](https://pub.dev/packages/responsive_window/score)
+[![License](https://img.shields.io/github/license/gabriel-x-duarte/responsive_window.svg)](https://github.com/gabriel-x-duarte/responsive_window/blob/main/LICENSE)
+[![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Web%20%7C%20macOS%20%7C%20Windows%20%7C%20Linux-blue)](https://pub.dev/packages/responsive_window)
+
 An app-level utility for reading the current Flutter app window size
 from anywhere in the widget tree.
 
@@ -497,6 +502,90 @@ Then use the core API directly:
 ```dart
 final ResponsiveWindowData windowData = ResponsiveWindowData.of(context);
 ```
+
+## FAQ
+
+#### What is the recommended way to use `ResponsiveWindow`?
+
+Place `ResponsiveWindow` above your root app widget, usually wrapping
+`MaterialApp`, `CupertinoApp`, or `WidgetsApp`.
+
+This creates an app-level responsive window scope, allowing widgets below it to
+read `ResponsiveWindowData` from `BuildContext`.
+
+Local `ResponsiveWindow` scopes are supported for advanced cases, but the
+primary usage is at the app level.
+
+#### Is this package a replacement for `MediaQuery`?
+
+No. `ResponsiveWindow` provides a responsive window data scope with width
+categories, breakpoints, aspect helpers, and responsive value resolution.
+
+Use `MediaQuery` when you need Flutter view metrics such as padding, view
+insets, text scale, device pixel ratio, platform brightness, or
+accessibility-related information.
+
+#### Do custom breakpoints change the meaning of the category names?
+
+No. Custom breakpoints change the upper width boundaries used to classify each
+category, but the category order remains the same.
+
+`compact`, `medium`, `expanded`, `large`, and `extraLarge` still represent an
+ordered progression from the smallest width category to the largest one.
+
+#### Why is `compact` required in `ResponsiveWindowValue` and `ResponsiveWindowBuilder`?
+
+`compact` is required because it works as the base fallback.
+
+When a value or builder is not provided for the current category, the package
+falls back to the nearest smaller configured category. This keeps responsive
+resolution predictable and ensures that every category can resolve to a value or
+builder.
+
+#### How does `ResponsiveWindowBuilder.animated` decide when to animate?
+
+`ResponsiveWindowBuilder.animated` animates when the resolved responsive builder
+changes after applying fallback rules.
+
+When a category has no builder, the resolved builder comes from the nearest
+smaller category that defines one.
+
+For example, if `expanded` has no builder and falls back to `medium`, resizing
+between `medium` and `expanded` does not trigger a transition because the same
+builder is still being used.
+
+If both `medium` and `expanded` have their own builders, resizing between
+`medium` and `expanded` does trigger a transition because the resolved builder
+changes.
+
+This keeps transitions tied to actual responsive layout changes instead of every
+category boundary change.
+
+#### Can I read responsive window data when no `ResponsiveWindow` ancestor is guaranteed?
+
+Yes. Use `ResponsiveWindowData.maybeOf(context)` or `context.maybeWindowData`
+when a `ResponsiveWindow` may not exist above the current context.
+
+Use `context.windowData` or `ResponsiveWindowData.of(context)` only when a
+`ResponsiveWindow` ancestor is certain to exist.
+
+#### Why am I getting an assertion error about unbounded constraints?
+
+`ResponsiveWindow` requires bounded width and height constraints.
+
+This usually means it was placed inside a widget that provides unbounded
+constraints, such as scrollable layouts.
+
+For local responsive scopes, place `ResponsiveWindow` only when the parent
+defines a finite area for the subtree.
+
+#### Why does `ResponsiveWindow` require bounded height if categories are based on width?
+
+The responsive category is based on width, but `ResponsiveWindowData` also
+provides the current height, Flutter `Size`, and geometric aspect.
+
+Because of that, `ResponsiveWindow` requires both width and height to be bounded
+so the window data remains complete and predictable.
 
 ## Additional Information
 

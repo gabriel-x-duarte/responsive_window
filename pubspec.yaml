@@ -1,6 +1,6 @@
 name: responsive_window
 description: A lightweight app-level responsive window utility for Flutter, with Material Design 3-inspired width breakpoints.
-version: 2.1.0
+version: 2.1.1
 homepage: https://github.com/gabriel-x-duarte/responsive_window
 repository: https://github.com/gabriel-x-duarte/responsive_window
 issue_tracker: https://github.com/gabriel-x-duarte/responsive_window/issues

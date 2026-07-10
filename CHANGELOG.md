@@ -1,3 +1,8 @@
+## 2.1.1
+
+* DOCS: add README badges
+* DOCS: add README FAQ
+
 ## 2.1.0
 
 * FEAT: add responsive window aspect classification
