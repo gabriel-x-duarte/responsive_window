@@ -47,12 +47,15 @@ void main() {
   }
 
   group('ResponsiveWindowBreakpoints', () {
-    test('exposes Material Design 3 default breakpoints', () {
-      expect(ResponsiveWindowBreakpoints.material3.compact, 600);
-      expect(ResponsiveWindowBreakpoints.material3.medium, 840);
-      expect(ResponsiveWindowBreakpoints.material3.expanded, 1200);
-      expect(ResponsiveWindowBreakpoints.material3.large, 1600);
-    });
+    test(
+      'exposes Material Design 3 default breakpoints',
+      () {
+        expect(ResponsiveWindowBreakpoints.material3.compact, 600);
+        expect(ResponsiveWindowBreakpoints.material3.medium, 840);
+        expect(ResponsiveWindowBreakpoints.material3.expanded, 1200);
+        expect(ResponsiveWindowBreakpoints.material3.large, 1600);
+      },
+    );
 
     test(
       'classifies widths using inclusive lower bounds and exclusive upper bounds',
@@ -84,337 +87,406 @@ void main() {
       },
     );
 
-    test('classifies widths using custom breakpoints', () {
-      const ResponsiveWindowBreakpoints breakpoints =
-          ResponsiveWindowBreakpoints(
-        compact: 640,
-        medium: 900,
-        expanded: 1280,
-        large: 1680,
-      );
+    test(
+      'classifies widths using custom breakpoints',
+      () {
+        const ResponsiveWindowBreakpoints breakpoints =
+            ResponsiveWindowBreakpoints(
+          compact: 640,
+          medium: 900,
+          expanded: 1280,
+          large: 1680,
+        );
 
-      expect(
-        breakpoints.categoryForWidth(639.99),
-        ResponsiveWindowCategory.compact,
-      );
+        expect(
+          breakpoints.categoryForWidth(639.99),
+          ResponsiveWindowCategory.compact,
+        );
 
-      expect(
-        breakpoints.categoryForWidth(640),
-        ResponsiveWindowCategory.medium,
-      );
+        expect(
+          breakpoints.categoryForWidth(640),
+          ResponsiveWindowCategory.medium,
+        );
 
-      expect(
-        breakpoints.categoryForWidth(900),
-        ResponsiveWindowCategory.expanded,
-      );
+        expect(
+          breakpoints.categoryForWidth(900),
+          ResponsiveWindowCategory.expanded,
+        );
 
-      expect(
-        breakpoints.categoryForWidth(1280),
-        ResponsiveWindowCategory.large,
-      );
+        expect(
+          breakpoints.categoryForWidth(1280),
+          ResponsiveWindowCategory.large,
+        );
 
-      expect(
-        breakpoints.categoryForWidth(1680),
-        ResponsiveWindowCategory.extraLarge,
-      );
-    });
+        expect(
+          breakpoints.categoryForWidth(1680),
+          ResponsiveWindowCategory.extraLarge,
+        );
+      },
+    );
 
-    test('supports value equality', () {
-      const ResponsiveWindowBreakpoints first = ResponsiveWindowBreakpoints(
-        compact: 600,
-        medium: 840,
-        expanded: 1200,
-        large: 1600,
-      );
-
-      const ResponsiveWindowBreakpoints second = ResponsiveWindowBreakpoints(
-        compact: 600,
-        medium: 840,
-        expanded: 1200,
-        large: 1600,
-      );
-
-      const ResponsiveWindowBreakpoints third = ResponsiveWindowBreakpoints(
-        compact: 640,
-        medium: 900,
-        expanded: 1280,
-        large: 1680,
-      );
-
-      expect(first, second);
-      expect(first.hashCode, second.hashCode);
-      expect(first, isNot(third));
-    });
-
-    test('returns a debug-friendly string representation', () {
-      expect(
-        ResponsiveWindowBreakpoints.material3.toString(),
-        'ResponsiveWindowBreakpoints(compact: 600.0, medium: 840.0, expanded: 1200.0, large: 1600.0)',
-      );
-    });
-
-    test('asserts when breakpoints are not finite', () {
-      expect(
-        () => ResponsiveWindowBreakpoints(
+    test(
+      'supports value equality',
+      () {
+        const ResponsiveWindowBreakpoints first = ResponsiveWindowBreakpoints(
           compact: 600,
           medium: 840,
           expanded: 1200,
-          large: double.infinity,
-        ),
-        throwsAssertionError,
-      );
-    });
+          large: 1600,
+        );
 
-    test('asserts when compact breakpoint is not greater than 0', () {
-      expect(
-        () => ResponsiveWindowBreakpoints(
-          compact: 0,
+        const ResponsiveWindowBreakpoints second = ResponsiveWindowBreakpoints(
+          compact: 600,
           medium: 840,
           expanded: 1200,
           large: 1600,
-        ),
-        throwsAssertionError,
-      );
-    });
+        );
 
-    test('asserts when breakpoints are not ordered', () {
-      expect(
-        () => ResponsiveWindowBreakpoints(
-          compact: 840,
-          medium: 600,
-          expanded: 1200,
-          large: 1600,
-        ),
-        throwsAssertionError,
-      );
-    });
+        const ResponsiveWindowBreakpoints third = ResponsiveWindowBreakpoints(
+          compact: 640,
+          medium: 900,
+          expanded: 1280,
+          large: 1680,
+        );
+
+        expect(first, second);
+        expect(first.hashCode, second.hashCode);
+        expect(first, isNot(third));
+      },
+    );
+
+    test(
+      'returns a debug-friendly string representation',
+      () {
+        expect(
+          ResponsiveWindowBreakpoints.material3.toString(),
+          'ResponsiveWindowBreakpoints(compact: 600.0, medium: 840.0, expanded: 1200.0, large: 1600.0)',
+        );
+      },
+    );
+
+    test(
+      'asserts when breakpoints are not finite',
+      () {
+        expect(
+          () => ResponsiveWindowBreakpoints(
+            compact: 600,
+            medium: 840,
+            expanded: 1200,
+            large: double.infinity,
+          ),
+          throwsAssertionError,
+        );
+      },
+    );
+
+    test(
+      'asserts when compact breakpoint is not greater than 0',
+      () {
+        expect(
+          () => ResponsiveWindowBreakpoints(
+            compact: 0,
+            medium: 840,
+            expanded: 1200,
+            large: 1600,
+          ),
+          throwsAssertionError,
+        );
+      },
+    );
+
+    test(
+      'asserts when breakpoints are not ordered',
+      () {
+        expect(
+          () => ResponsiveWindowBreakpoints(
+            compact: 840,
+            medium: 600,
+            expanded: 1200,
+            large: 1600,
+          ),
+          throwsAssertionError,
+        );
+      },
+    );
   });
 
   group('ResponsiveWindowData', () {
-    test('returns the current app window size as a Flutter Size', () {
-      final ResponsiveWindowData data = dataForWidth(800, height: 480);
+    test(
+      'returns the current app window size as a Flutter Size',
+      () {
+        final ResponsiveWindowData data = dataForWidth(800, height: 480);
 
-      expect(data.size, const Size(800, 480));
-    });
+        expect(data.size, const Size(800, 480));
+      },
+    );
 
-    test('identifies landscape aspect', () {
-      final ResponsiveWindowData data = dataForWidth(800, height: 480);
+    test(
+      'identifies landscape aspect',
+      () {
+        final ResponsiveWindowData data = dataForWidth(800, height: 480);
 
-      expect(data.aspect, ResponsiveWindowAspect.landscape);
-      expect(data.isLandscape, isTrue);
-      expect(data.isPortrait, isFalse);
-      expect(data.isSquare, isFalse);
-    });
+        expect(data.aspect, ResponsiveWindowAspect.landscape);
+        expect(data.isLandscape, isTrue);
+        expect(data.isPortrait, isFalse);
+        expect(data.isSquare, isFalse);
+      },
+    );
 
-    test('identifies portrait aspect', () {
-      final ResponsiveWindowData data = dataForWidth(480, height: 800);
+    test(
+      'identifies portrait aspect',
+      () {
+        final ResponsiveWindowData data = dataForWidth(480, height: 800);
 
-      expect(data.aspect, ResponsiveWindowAspect.portrait);
-      expect(data.isLandscape, isFalse);
-      expect(data.isPortrait, isTrue);
-      expect(data.isSquare, isFalse);
-    });
+        expect(data.aspect, ResponsiveWindowAspect.portrait);
+        expect(data.isLandscape, isFalse);
+        expect(data.isPortrait, isTrue);
+        expect(data.isSquare, isFalse);
+      },
+    );
 
-    test('identifies square aspect', () {
-      final ResponsiveWindowData data = dataForWidth(600, height: 600);
+    test(
+      'identifies square aspect',
+      () {
+        final ResponsiveWindowData data = dataForWidth(600, height: 600);
 
-      expect(data.aspect, ResponsiveWindowAspect.square);
-      expect(data.isLandscape, isFalse);
-      expect(data.isPortrait, isFalse);
-      expect(data.isSquare, isTrue);
-    });
+        expect(data.aspect, ResponsiveWindowAspect.square);
+        expect(data.isLandscape, isFalse);
+        expect(data.isPortrait, isFalse);
+        expect(data.isSquare, isTrue);
+      },
+    );
 
-    test('exposes the configured breakpoints', () {
-      const ResponsiveWindowBreakpoints breakpoints =
-          ResponsiveWindowBreakpoints(
-        compact: 640,
-        medium: 900,
-        expanded: 1280,
-        large: 1680,
-      );
-
-      final ResponsiveWindowData data = dataForWidth(
-        920,
-        breakpoints: breakpoints,
-      );
-
-      expect(data.breakpoints, breakpoints);
-      expect(data.compactBreakpoint, 640);
-      expect(data.mediumBreakpoint, 900);
-      expect(data.expandedBreakpoint, 1280);
-      expect(data.largeBreakpoint, 1680);
-    });
-
-    test('classifies compact widths', () {
-      final ResponsiveWindowData data = dataForWidth(599.99);
-
-      expect(data.category, ResponsiveWindowCategory.compact);
-      expect(data.isCompact, isTrue);
-      expect(data.isMedium, isFalse);
-      expect(data.isExpanded, isFalse);
-      expect(data.isLarge, isFalse);
-      expect(data.isExtraLarge, isFalse);
-    });
-
-    test('classifies medium widths', () {
-      final ResponsiveWindowData data = dataForWidth(600);
-
-      expect(data.category, ResponsiveWindowCategory.medium);
-      expect(data.isCompact, isFalse);
-      expect(data.isMedium, isTrue);
-      expect(data.isExpanded, isFalse);
-      expect(data.isLarge, isFalse);
-      expect(data.isExtraLarge, isFalse);
-    });
-
-    test('classifies expanded widths', () {
-      final ResponsiveWindowData data = dataForWidth(840);
-
-      expect(data.category, ResponsiveWindowCategory.expanded);
-      expect(data.isCompact, isFalse);
-      expect(data.isMedium, isFalse);
-      expect(data.isExpanded, isTrue);
-      expect(data.isLarge, isFalse);
-      expect(data.isExtraLarge, isFalse);
-    });
-
-    test('classifies large widths', () {
-      final ResponsiveWindowData data = dataForWidth(1200);
-
-      expect(data.category, ResponsiveWindowCategory.large);
-      expect(data.isCompact, isFalse);
-      expect(data.isMedium, isFalse);
-      expect(data.isExpanded, isFalse);
-      expect(data.isLarge, isTrue);
-      expect(data.isExtraLarge, isFalse);
-    });
-
-    test('classifies extra-large widths', () {
-      final ResponsiveWindowData data = dataForWidth(1600);
-
-      expect(data.category, ResponsiveWindowCategory.extraLarge);
-      expect(data.isCompact, isFalse);
-      expect(data.isMedium, isFalse);
-      expect(data.isExpanded, isFalse);
-      expect(data.isLarge, isFalse);
-      expect(data.isExtraLarge, isTrue);
-    });
-
-    test('classifies widths using custom breakpoints', () {
-      final ResponsiveWindowData data = dataForWidth(
-        920,
-        breakpoints: const ResponsiveWindowBreakpoints(
+    test(
+      'exposes the configured breakpoints',
+      () {
+        const ResponsiveWindowBreakpoints breakpoints =
+            ResponsiveWindowBreakpoints(
           compact: 640,
           medium: 900,
           expanded: 1280,
           large: 1680,
-        ),
-      );
+        );
 
-      expect(data.category, ResponsiveWindowCategory.expanded);
-      expect(data.isExpanded, isTrue);
-    });
+        final ResponsiveWindowData data = dataForWidth(
+          920,
+          breakpoints: breakpoints,
+        );
 
-    test('uses inclusive lower bounds and exclusive upper bounds', () {
-      expect(
-        dataForWidth(600).category,
-        ResponsiveWindowCategory.medium,
-      );
+        expect(data.breakpoints, breakpoints);
+        expect(data.compactBreakpoint, 640);
+        expect(data.mediumBreakpoint, 900);
+        expect(data.expandedBreakpoint, 1280);
+        expect(data.largeBreakpoint, 1680);
+      },
+    );
 
-      expect(
-        dataForWidth(840).category,
-        ResponsiveWindowCategory.expanded,
-      );
+    test(
+      'classifies compact widths',
+      () {
+        final ResponsiveWindowData data = dataForWidth(599.99);
 
-      expect(
-        dataForWidth(1200).category,
-        ResponsiveWindowCategory.large,
-      );
+        expect(data.category, ResponsiveWindowCategory.compact);
+        expect(data.isCompact, isTrue);
+        expect(data.isMedium, isFalse);
+        expect(data.isExpanded, isFalse);
+        expect(data.isLarge, isFalse);
+        expect(data.isExtraLarge, isFalse);
+      },
+    );
 
-      expect(
-        dataForWidth(1600).category,
-        ResponsiveWindowCategory.extraLarge,
-      );
-    });
+    test(
+      'classifies medium widths',
+      () {
+        final ResponsiveWindowData data = dataForWidth(600);
 
-    test('compares whether category is at least another category', () {
-      final ResponsiveWindowData data = dataForWidth(840);
+        expect(data.category, ResponsiveWindowCategory.medium);
+        expect(data.isCompact, isFalse);
+        expect(data.isMedium, isTrue);
+        expect(data.isExpanded, isFalse);
+        expect(data.isLarge, isFalse);
+        expect(data.isExtraLarge, isFalse);
+      },
+    );
 
-      expect(data.category, ResponsiveWindowCategory.expanded);
+    test(
+      'classifies expanded widths',
+      () {
+        final ResponsiveWindowData data = dataForWidth(840);
 
-      expect(data.isAtLeast(ResponsiveWindowCategory.compact), isTrue);
-      expect(data.isAtLeast(ResponsiveWindowCategory.medium), isTrue);
-      expect(data.isAtLeast(ResponsiveWindowCategory.expanded), isTrue);
-      expect(data.isAtLeast(ResponsiveWindowCategory.large), isFalse);
-      expect(data.isAtLeast(ResponsiveWindowCategory.extraLarge), isFalse);
-    });
+        expect(data.category, ResponsiveWindowCategory.expanded);
+        expect(data.isCompact, isFalse);
+        expect(data.isMedium, isFalse);
+        expect(data.isExpanded, isTrue);
+        expect(data.isLarge, isFalse);
+        expect(data.isExtraLarge, isFalse);
+      },
+    );
 
-    test('compares whether category is at most another category', () {
-      final ResponsiveWindowData data = dataForWidth(840);
+    test(
+      'classifies large widths',
+      () {
+        final ResponsiveWindowData data = dataForWidth(1200);
 
-      expect(data.category, ResponsiveWindowCategory.expanded);
+        expect(data.category, ResponsiveWindowCategory.large);
+        expect(data.isCompact, isFalse);
+        expect(data.isMedium, isFalse);
+        expect(data.isExpanded, isFalse);
+        expect(data.isLarge, isTrue);
+        expect(data.isExtraLarge, isFalse);
+      },
+    );
 
-      expect(data.isAtMost(ResponsiveWindowCategory.compact), isFalse);
-      expect(data.isAtMost(ResponsiveWindowCategory.medium), isFalse);
-      expect(data.isAtMost(ResponsiveWindowCategory.expanded), isTrue);
-      expect(data.isAtMost(ResponsiveWindowCategory.large), isTrue);
-      expect(data.isAtMost(ResponsiveWindowCategory.extraLarge), isTrue);
-    });
+    test(
+      'classifies extra-large widths',
+      () {
+        final ResponsiveWindowData data = dataForWidth(1600);
 
-    test('supports value equality', () {
-      final ResponsiveWindowData first = dataForWidth(800, height: 480);
-      final ResponsiveWindowData second = dataForWidth(800, height: 480);
-      final ResponsiveWindowData third = dataForWidth(801, height: 480);
+        expect(data.category, ResponsiveWindowCategory.extraLarge);
+        expect(data.isCompact, isFalse);
+        expect(data.isMedium, isFalse);
+        expect(data.isExpanded, isFalse);
+        expect(data.isLarge, isFalse);
+        expect(data.isExtraLarge, isTrue);
+      },
+    );
 
-      expect(first, second);
-      expect(first.hashCode, second.hashCode);
-      expect(first, isNot(third));
-    });
+    test(
+      'classifies widths using custom breakpoints',
+      () {
+        final ResponsiveWindowData data = dataForWidth(
+          920,
+          breakpoints: const ResponsiveWindowBreakpoints(
+            compact: 640,
+            medium: 900,
+            expanded: 1280,
+            large: 1680,
+          ),
+        );
 
-    test('includes breakpoints in value equality', () {
-      final ResponsiveWindowData first = dataForWidth(
-        800,
-        breakpoints: const ResponsiveWindowBreakpoints(
-          compact: 600,
-          medium: 840,
-          expanded: 1200,
-          large: 1600,
-        ),
-      );
+        expect(data.category, ResponsiveWindowCategory.expanded);
+        expect(data.isExpanded, isTrue);
+      },
+    );
 
-      final ResponsiveWindowData second = dataForWidth(
-        800,
-        breakpoints: const ResponsiveWindowBreakpoints(
-          compact: 600,
-          medium: 840,
-          expanded: 1200,
-          large: 1600,
-        ),
-      );
+    test(
+      'uses inclusive lower bounds and exclusive upper bounds',
+      () {
+        expect(
+          dataForWidth(600).category,
+          ResponsiveWindowCategory.medium,
+        );
 
-      final ResponsiveWindowData third = dataForWidth(
-        800,
-        breakpoints: const ResponsiveWindowBreakpoints(
-          compact: 640,
-          medium: 900,
-          expanded: 1280,
-          large: 1680,
-        ),
-      );
+        expect(
+          dataForWidth(840).category,
+          ResponsiveWindowCategory.expanded,
+        );
 
-      expect(first, second);
-      expect(first.hashCode, second.hashCode);
-      expect(first, isNot(third));
-    });
+        expect(
+          dataForWidth(1200).category,
+          ResponsiveWindowCategory.large,
+        );
 
-    test('returns a debug-friendly string representation', () {
-      final ResponsiveWindowData data = dataForWidth(840);
+        expect(
+          dataForWidth(1600).category,
+          ResponsiveWindowCategory.extraLarge,
+        );
+      },
+    );
 
-      expect(
-        data.toString(),
-        'ResponsiveWindowData(width: 840.0, height: 600.0, category: ResponsiveWindowCategory.expanded, aspect: ResponsiveWindowAspect.landscape, breakpoints: ResponsiveWindowBreakpoints(compact: 600.0, medium: 840.0, expanded: 1200.0, large: 1600.0))',
-      );
-    });
+    test(
+      'compares whether category is at least another category',
+      () {
+        final ResponsiveWindowData data = dataForWidth(840);
+
+        expect(data.category, ResponsiveWindowCategory.expanded);
+
+        expect(data.isAtLeast(ResponsiveWindowCategory.compact), isTrue);
+        expect(data.isAtLeast(ResponsiveWindowCategory.medium), isTrue);
+        expect(data.isAtLeast(ResponsiveWindowCategory.expanded), isTrue);
+        expect(data.isAtLeast(ResponsiveWindowCategory.large), isFalse);
+        expect(data.isAtLeast(ResponsiveWindowCategory.extraLarge), isFalse);
+      },
+    );
+
+    test(
+      'compares whether category is at most another category',
+      () {
+        final ResponsiveWindowData data = dataForWidth(840);
+
+        expect(data.category, ResponsiveWindowCategory.expanded);
+
+        expect(data.isAtMost(ResponsiveWindowCategory.compact), isFalse);
+        expect(data.isAtMost(ResponsiveWindowCategory.medium), isFalse);
+        expect(data.isAtMost(ResponsiveWindowCategory.expanded), isTrue);
+        expect(data.isAtMost(ResponsiveWindowCategory.large), isTrue);
+        expect(data.isAtMost(ResponsiveWindowCategory.extraLarge), isTrue);
+      },
+    );
+
+    test(
+      'supports value equality',
+      () {
+        final ResponsiveWindowData first = dataForWidth(800, height: 480);
+        final ResponsiveWindowData second = dataForWidth(800, height: 480);
+        final ResponsiveWindowData third = dataForWidth(801, height: 480);
+
+        expect(first, second);
+        expect(first.hashCode, second.hashCode);
+        expect(first, isNot(third));
+      },
+    );
+
+    test(
+      'includes breakpoints in value equality',
+      () {
+        final ResponsiveWindowData first = dataForWidth(
+          800,
+          breakpoints: const ResponsiveWindowBreakpoints(
+            compact: 600,
+            medium: 840,
+            expanded: 1200,
+            large: 1600,
+          ),
+        );
+
+        final ResponsiveWindowData second = dataForWidth(
+          800,
+          breakpoints: const ResponsiveWindowBreakpoints(
+            compact: 600,
+            medium: 840,
+            expanded: 1200,
+            large: 1600,
+          ),
+        );
+
+        final ResponsiveWindowData third = dataForWidth(
+          800,
+          breakpoints: const ResponsiveWindowBreakpoints(
+            compact: 640,
+            medium: 900,
+            expanded: 1280,
+            large: 1680,
+          ),
+        );
+
+        expect(first, second);
+        expect(first.hashCode, second.hashCode);
+        expect(first, isNot(third));
+      },
+    );
+
+    test(
+      'returns a debug-friendly string representation',
+      () {
+        final ResponsiveWindowData data = dataForWidth(840);
+
+        expect(
+          data.toString(),
+          'ResponsiveWindowData(width: 840.0, height: 600.0, category: ResponsiveWindowCategory.expanded, aspect: ResponsiveWindowAspect.landscape, breakpoints: ResponsiveWindowBreakpoints(compact: 600.0, medium: 840.0, expanded: 1200.0, large: 1600.0))',
+        );
+      },
+    );
   });
 
   group('ResponsiveWindow', () {
@@ -453,440 +525,539 @@ void main() {
       },
     );
 
-    testWidgets('provides window data to the widget subtree', (tester) async {
-      late ResponsiveWindowData windowData;
+    testWidgets(
+      'provides window data to the widget subtree',
+      (tester) async {
+        late ResponsiveWindowData windowData;
 
-      await tester.pumpWidget(
-        constrainedResponsiveWindow(
-          width: 700,
-          height: 500,
-          child: Builder(
-            builder: (context) {
-              windowData = context.windowData;
+        await tester.pumpWidget(
+          constrainedResponsiveWindow(
+            width: 700,
+            height: 500,
+            child: Builder(
+              builder: (context) {
+                windowData = context.windowData;
 
-              return const SizedBox();
-            },
+                return const SizedBox();
+              },
+            ),
           ),
-        ),
-      );
+        );
 
-      expect(windowData.width, 700);
-      expect(windowData.height, 500);
-      expect(windowData.size, const Size(700, 500));
-      expect(windowData.aspect, ResponsiveWindowAspect.landscape);
-      expect(windowData.isLandscape, isTrue);
-      expect(windowData.isPortrait, isFalse);
-      expect(windowData.isSquare, isFalse);
-      expect(windowData.breakpoints, ResponsiveWindowBreakpoints.material3);
-      expect(windowData.category, ResponsiveWindowCategory.medium);
-    });
+        expect(windowData.width, 700);
+        expect(windowData.height, 500);
+        expect(windowData.size, const Size(700, 500));
+        expect(windowData.aspect, ResponsiveWindowAspect.landscape);
+        expect(windowData.isLandscape, isTrue);
+        expect(windowData.isPortrait, isFalse);
+        expect(windowData.isSquare, isFalse);
+        expect(windowData.breakpoints, ResponsiveWindowBreakpoints.material3);
+        expect(windowData.category, ResponsiveWindowCategory.medium);
+      },
+    );
 
-    testWidgets('uses custom breakpoints from ResponsiveWindow',
-        (tester) async {
-      const ResponsiveWindowBreakpoints breakpoints =
-          ResponsiveWindowBreakpoints(
-        compact: 640,
-        medium: 900,
-        expanded: 1280,
-        large: 1680,
-      );
+    testWidgets(
+      'uses custom breakpoints from ResponsiveWindow',
+      (tester) async {
+        const ResponsiveWindowBreakpoints breakpoints =
+            ResponsiveWindowBreakpoints(
+          compact: 640,
+          medium: 900,
+          expanded: 1280,
+          large: 1680,
+        );
 
-      tester.view.devicePixelRatio = 1;
-      tester.view.physicalSize = const Size(1000, 600);
+        tester.view.devicePixelRatio = 1;
+        tester.view.physicalSize = const Size(1000, 600);
 
-      addTearDown(() {
-        tester.view.resetDevicePixelRatio();
-        tester.view.resetPhysicalSize();
-      });
+        addTearDown(() {
+          tester.view.resetDevicePixelRatio();
+          tester.view.resetPhysicalSize();
+        });
 
-      late ResponsiveWindowData windowData;
+        late ResponsiveWindowData windowData;
 
-      await tester.pumpWidget(
-        testDirectionality(
-          child: Center(
-            child: SizedBox(
-              width: 920,
-              height: 500,
-              child: ResponsiveWindow(
-                breakpoints: breakpoints,
-                child: Builder(
-                  builder: (context) {
-                    windowData = context.windowData;
+        await tester.pumpWidget(
+          testDirectionality(
+            child: Center(
+              child: SizedBox(
+                width: 920,
+                height: 500,
+                child: ResponsiveWindow(
+                  breakpoints: breakpoints,
+                  child: Builder(
+                    builder: (context) {
+                      windowData = context.windowData;
 
-                    return const SizedBox();
-                  },
+                      return const SizedBox();
+                    },
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      );
+        );
 
-      expect(windowData.width, 920);
-      expect(windowData.height, 500);
-      expect(windowData.breakpoints, breakpoints);
-      expect(windowData.compactBreakpoint, 640);
-      expect(windowData.mediumBreakpoint, 900);
-      expect(windowData.expandedBreakpoint, 1280);
-      expect(windowData.largeBreakpoint, 1680);
-      expect(windowData.category, ResponsiveWindowCategory.expanded);
-      expect(windowData.aspect, ResponsiveWindowAspect.landscape);
-    });
+        expect(windowData.width, 920);
+        expect(windowData.height, 500);
+        expect(windowData.breakpoints, breakpoints);
+        expect(windowData.compactBreakpoint, 640);
+        expect(windowData.mediumBreakpoint, 900);
+        expect(windowData.expandedBreakpoint, 1280);
+        expect(windowData.largeBreakpoint, 1680);
+        expect(windowData.category, ResponsiveWindowCategory.expanded);
+        expect(windowData.aspect, ResponsiveWindowAspect.landscape);
+      },
+    );
 
-    testWidgets('maybeOf returns null when no ResponsiveWindow exists above',
-        (tester) async {
-      late ResponsiveWindowData? windowData;
+    testWidgets(
+      'maybeOf returns null when no ResponsiveWindow exists above',
+      (tester) async {
+        late ResponsiveWindowData? windowData;
 
-      await tester.pumpWidget(
-        Builder(
-          builder: (context) {
-            windowData = ResponsiveWindowData.maybeOf(context);
-
-            return const SizedBox();
-          },
-        ),
-      );
-
-      expect(windowData, isNull);
-    });
-
-    testWidgets('of throws FlutterError when no ResponsiveWindow exists above',
-        (tester) async {
-      await tester.pumpWidget(
-        Builder(
-          builder: (context) {
-            expect(
-              () => ResponsiveWindowData.of(context),
-              throwsA(isA<FlutterError>()),
-            );
-
-            return const SizedBox();
-          },
-        ),
-      );
-    });
-
-    testWidgets('maybeWindowData returns null when no ResponsiveWindow exists',
-        (tester) async {
-      late ResponsiveWindowData? windowData;
-
-      await tester.pumpWidget(
-        Builder(
-          builder: (context) {
-            windowData = context.maybeWindowData;
-
-            return const SizedBox();
-          },
-        ),
-      );
-
-      expect(windowData, isNull);
-    });
-
-    testWidgets('context.windowData returns the nearest ResponsiveWindowData',
-        (tester) async {
-      late ResponsiveWindowData windowData;
-
-      await tester.pumpWidget(
-        constrainedResponsiveWindow(
-          width: 500,
-          height: 400,
-          child: Builder(
+        await tester.pumpWidget(
+          Builder(
             builder: (context) {
-              windowData = context.windowData;
+              windowData = ResponsiveWindowData.maybeOf(context);
 
               return const SizedBox();
             },
           ),
-        ),
-      );
+        );
 
-      expect(windowData.width, 500);
-      expect(windowData.height, 400);
-      expect(windowData.size, const Size(500, 400));
-      expect(windowData.aspect, ResponsiveWindowAspect.landscape);
-      expect(windowData.category, ResponsiveWindowCategory.compact);
-    });
-  });
+        expect(windowData, isNull);
+      },
+    );
 
-  group('ResponsiveWindowValue', () {
-    test('resolves exact configured values for each category', () {
-      const ResponsiveWindowValue<String> value = ResponsiveWindowValue<String>(
-        compact: 'compact',
-        medium: 'medium',
-        expanded: 'expanded',
-        large: 'large',
-        extraLarge: 'extraLarge',
-      );
-
-      expect(value.resolveWith(dataForWidth(500)), 'compact');
-      expect(value.resolveWith(dataForWidth(600)), 'medium');
-      expect(value.resolveWith(dataForWidth(840)), 'expanded');
-      expect(value.resolveWith(dataForWidth(1200)), 'large');
-      expect(value.resolveWith(dataForWidth(1600)), 'extraLarge');
-    });
-
-    test('falls back to the nearest smaller configured value', () {
-      const ResponsiveWindowValue<String> value = ResponsiveWindowValue<String>(
-        compact: 'compact',
-        medium: 'medium',
-        large: 'large',
-      );
-
-      expect(value.resolveWith(dataForWidth(500)), 'compact');
-      expect(value.resolveWith(dataForWidth(600)), 'medium');
-      expect(value.resolveWith(dataForWidth(840)), 'medium');
-      expect(value.resolveWith(dataForWidth(1200)), 'large');
-      expect(value.resolveWith(dataForWidth(1600)), 'large');
-    });
-
-    test('uses compact as the base fallback', () {
-      const ResponsiveWindowValue<int> value = ResponsiveWindowValue<int>(
-        compact: 1,
-      );
-
-      expect(value.resolveWith(dataForWidth(500)), 1);
-      expect(value.resolveWith(dataForWidth(600)), 1);
-      expect(value.resolveWith(dataForWidth(840)), 1);
-      expect(value.resolveWith(dataForWidth(1200)), 1);
-      expect(value.resolveWith(dataForWidth(1600)), 1);
-    });
-
-    test('treats optional null values as not configured', () {
-      const ResponsiveWindowValue<String> value = ResponsiveWindowValue<String>(
-        compact: 'compact',
-        medium: null,
-        expanded: 'expanded',
-        large: null,
-      );
-
-      expect(value.resolveWith(dataForWidth(600)), 'compact');
-      expect(value.resolveWith(dataForWidth(1200)), 'expanded');
-      expect(value.resolveWith(dataForWidth(1600)), 'expanded');
-    });
-
-    testWidgets('resolve uses ResponsiveWindowData from context',
-        (tester) async {
-      tester.view.devicePixelRatio = 1;
-      tester.view.physicalSize = const Size(1000, 700);
-
-      addTearDown(() {
-        tester.view.resetDevicePixelRatio();
-        tester.view.resetPhysicalSize();
-      });
-
-      late int resolvedValue;
-
-      await tester.pumpWidget(
-        constrainedResponsiveWindow(
-          width: 900,
-          height: 500,
-          child: Builder(
+    testWidgets(
+      'of throws FlutterError when no ResponsiveWindow exists above',
+      (tester) async {
+        await tester.pumpWidget(
+          Builder(
             builder: (context) {
-              resolvedValue = const ResponsiveWindowValue<int>(
-                compact: 1,
-                medium: 2,
-                expanded: 3,
-              ).resolve(context);
+              expect(
+                () => ResponsiveWindowData.of(context),
+                throwsA(isA<FlutterError>()),
+              );
 
               return const SizedBox();
             },
           ),
-        ),
-      );
+        );
+      },
+    );
 
-      expect(resolvedValue, 3);
-    });
-  });
+    testWidgets(
+      'maybeWindowData returns null when no ResponsiveWindow exists',
+      (tester) async {
+        late ResponsiveWindowData? windowData;
 
-  group('ResponsiveWindowBuilder', () {
-    test('exposes default transition duration', () {
-      expect(
-        ResponsiveWindowBuilder.defaultTransitionDuration,
-        const Duration(milliseconds: 220),
-      );
-    });
+        await tester.pumpWidget(
+          Builder(
+            builder: (context) {
+              windowData = context.maybeWindowData;
 
-    testWidgets('builds the compact builder', (tester) async {
-      await tester.pumpWidget(
-        constrainedResponsiveWindow(
-          width: 500,
-          height: 500,
-          child: ResponsiveWindowBuilder(
-            compact: (context, data) {
-              return const Text('compact');
+              return const SizedBox();
             },
           ),
-        ),
-      );
+        );
 
-      expect(find.text('compact'), findsOneWidget);
-    });
+        expect(windowData, isNull);
+      },
+    );
 
-    testWidgets('builds the exact configured builder for each category',
-        (tester) async {
-      Future<void> pumpForWidth(double width) async {
-        tester.view.devicePixelRatio = 1;
-        tester.view.physicalSize = Size(width + 100, 700);
+    testWidgets(
+      'context.windowData returns the nearest ResponsiveWindowData',
+      (tester) async {
+        late ResponsiveWindowData windowData;
 
         await tester.pumpWidget(
           constrainedResponsiveWindow(
-            width: width,
+            width: 500,
+            height: 400,
+            child: Builder(
+              builder: (context) {
+                windowData = context.windowData;
+
+                return const SizedBox();
+              },
+            ),
+          ),
+        );
+
+        expect(windowData.width, 500);
+        expect(windowData.height, 400);
+        expect(windowData.size, const Size(500, 400));
+        expect(windowData.aspect, ResponsiveWindowAspect.landscape);
+        expect(windowData.category, ResponsiveWindowCategory.compact);
+      },
+    );
+
+    testWidgets(
+      'context.windowData reads from the nearest ResponsiveWindow when scopes are nested',
+      (tester) async {
+        tester.view.devicePixelRatio = 1;
+        tester.view.physicalSize = const Size(1200, 900);
+
+        addTearDown(() {
+          tester.view.resetDevicePixelRatio();
+          tester.view.resetPhysicalSize();
+        });
+
+        late ResponsiveWindowData outerWindowData;
+        late ResponsiveWindowData innerWindowData;
+
+        await tester.pumpWidget(
+          constrainedResponsiveWindow(
+            width: 1000,
+            height: 700,
+            child: Builder(
+              builder: (outerContext) {
+                outerWindowData = outerContext.windowData;
+
+                return Center(
+                  child: SizedBox(
+                    width: 400,
+                    height: 300,
+                    child: ResponsiveWindow(
+                      child: Builder(
+                        builder: (innerContext) {
+                          innerWindowData = innerContext.windowData;
+
+                          return const SizedBox();
+                        },
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+
+        expect(outerWindowData.width, 1000);
+        expect(outerWindowData.height, 700);
+        expect(outerWindowData.category, ResponsiveWindowCategory.expanded);
+        expect(outerWindowData.aspect, ResponsiveWindowAspect.landscape);
+
+        expect(innerWindowData.width, 400);
+        expect(innerWindowData.height, 300);
+        expect(innerWindowData.category, ResponsiveWindowCategory.compact);
+        expect(innerWindowData.aspect, ResponsiveWindowAspect.landscape);
+      },
+    );
+  });
+
+  group('ResponsiveWindowValue', () {
+    test(
+      'resolves exact configured values for each category',
+      () {
+        const ResponsiveWindowValue<String> value =
+            ResponsiveWindowValue<String>(
+          compact: 'compact',
+          medium: 'medium',
+          expanded: 'expanded',
+          large: 'large',
+          extraLarge: 'extraLarge',
+        );
+
+        expect(value.resolveWith(dataForWidth(500)), 'compact');
+        expect(value.resolveWith(dataForWidth(600)), 'medium');
+        expect(value.resolveWith(dataForWidth(840)), 'expanded');
+        expect(value.resolveWith(dataForWidth(1200)), 'large');
+        expect(value.resolveWith(dataForWidth(1600)), 'extraLarge');
+      },
+    );
+
+    test(
+      'falls back to the nearest smaller configured value',
+      () {
+        const ResponsiveWindowValue<String> value =
+            ResponsiveWindowValue<String>(
+          compact: 'compact',
+          medium: 'medium',
+          large: 'large',
+        );
+
+        expect(value.resolveWith(dataForWidth(500)), 'compact');
+        expect(value.resolveWith(dataForWidth(600)), 'medium');
+        expect(value.resolveWith(dataForWidth(840)), 'medium');
+        expect(value.resolveWith(dataForWidth(1200)), 'large');
+        expect(value.resolveWith(dataForWidth(1600)), 'large');
+      },
+    );
+
+    test(
+      'uses compact as the base fallback',
+      () {
+        const ResponsiveWindowValue<int> value = ResponsiveWindowValue<int>(
+          compact: 1,
+        );
+
+        expect(value.resolveWith(dataForWidth(500)), 1);
+        expect(value.resolveWith(dataForWidth(600)), 1);
+        expect(value.resolveWith(dataForWidth(840)), 1);
+        expect(value.resolveWith(dataForWidth(1200)), 1);
+        expect(value.resolveWith(dataForWidth(1600)), 1);
+      },
+    );
+
+    test(
+      'treats optional null values as not configured',
+      () {
+        const ResponsiveWindowValue<String> value =
+            ResponsiveWindowValue<String>(
+          compact: 'compact',
+          medium: null,
+          expanded: 'expanded',
+          large: null,
+        );
+
+        expect(value.resolveWith(dataForWidth(600)), 'compact');
+        expect(value.resolveWith(dataForWidth(1200)), 'expanded');
+        expect(value.resolveWith(dataForWidth(1600)), 'expanded');
+      },
+    );
+
+    testWidgets(
+      'resolve uses ResponsiveWindowData from context',
+      (tester) async {
+        tester.view.devicePixelRatio = 1;
+        tester.view.physicalSize = const Size(1000, 700);
+
+        addTearDown(() {
+          tester.view.resetDevicePixelRatio();
+          tester.view.resetPhysicalSize();
+        });
+
+        late int resolvedValue;
+
+        await tester.pumpWidget(
+          constrainedResponsiveWindow(
+            width: 900,
+            height: 500,
+            child: Builder(
+              builder: (context) {
+                resolvedValue = const ResponsiveWindowValue<int>(
+                  compact: 1,
+                  medium: 2,
+                  expanded: 3,
+                ).resolve(context);
+
+                return const SizedBox();
+              },
+            ),
+          ),
+        );
+
+        expect(resolvedValue, 3);
+      },
+    );
+  });
+
+  group('ResponsiveWindowBuilder', () {
+    test(
+      'exposes default transition duration',
+      () {
+        expect(
+          ResponsiveWindowBuilder.defaultTransitionDuration,
+          const Duration(milliseconds: 220),
+        );
+      },
+    );
+
+    testWidgets(
+      'builds the compact builder',
+      (tester) async {
+        await tester.pumpWidget(
+          constrainedResponsiveWindow(
+            width: 500,
             height: 500,
             child: ResponsiveWindowBuilder(
               compact: (context, data) {
                 return const Text('compact');
               },
-              medium: (context, data) {
-                return const Text('medium');
+            ),
+          ),
+        );
+
+        expect(find.text('compact'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'builds the exact configured builder for each category',
+      (tester) async {
+        Future<void> pumpForWidth(double width) async {
+          tester.view.devicePixelRatio = 1;
+          tester.view.physicalSize = Size(width + 100, 700);
+
+          await tester.pumpWidget(
+            constrainedResponsiveWindow(
+              width: width,
+              height: 500,
+              child: ResponsiveWindowBuilder(
+                compact: (context, data) {
+                  return const Text('compact');
+                },
+                medium: (context, data) {
+                  return const Text('medium');
+                },
+                expanded: (context, data) {
+                  return const Text('expanded');
+                },
+                large: (context, data) {
+                  return const Text('large');
+                },
+                extraLarge: (context, data) {
+                  return const Text('extraLarge');
+                },
+              ),
+            ),
+          );
+        }
+
+        addTearDown(() {
+          tester.view.resetDevicePixelRatio();
+          tester.view.resetPhysicalSize();
+        });
+
+        await pumpForWidth(500);
+        expect(find.text('compact'), findsOneWidget);
+
+        await pumpForWidth(700);
+        expect(find.text('medium'), findsOneWidget);
+
+        await pumpForWidth(900);
+        expect(find.text('expanded'), findsOneWidget);
+
+        await pumpForWidth(1300);
+        expect(find.text('large'), findsOneWidget);
+
+        await pumpForWidth(1700);
+        expect(find.text('extraLarge'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'falls back to the nearest smaller configured builder',
+      (tester) async {
+        Future<void> pumpForWidth(double width) async {
+          tester.view.devicePixelRatio = 1;
+          tester.view.physicalSize = Size(width + 100, 700);
+
+          await tester.pumpWidget(
+            constrainedResponsiveWindow(
+              width: width,
+              height: 500,
+              child: ResponsiveWindowBuilder(
+                compact: (context, data) {
+                  return const Text('compact');
+                },
+                medium: (context, data) {
+                  return const Text('medium');
+                },
+                large: (context, data) {
+                  return const Text('large');
+                },
+              ),
+            ),
+          );
+        }
+
+        addTearDown(() {
+          tester.view.resetDevicePixelRatio();
+          tester.view.resetPhysicalSize();
+        });
+
+        await pumpForWidth(500);
+        expect(find.text('compact'), findsOneWidget);
+
+        await pumpForWidth(700);
+        expect(find.text('medium'), findsOneWidget);
+
+        await pumpForWidth(900);
+        expect(find.text('medium'), findsOneWidget);
+
+        await pumpForWidth(1300);
+        expect(find.text('large'), findsOneWidget);
+
+        await pumpForWidth(1700);
+        expect(find.text('large'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'passes ResponsiveWindowData to the selected builder',
+      (tester) async {
+        tester.view.devicePixelRatio = 1;
+        tester.view.physicalSize = const Size(1000, 700);
+
+        addTearDown(() {
+          tester.view.resetDevicePixelRatio();
+          tester.view.resetPhysicalSize();
+        });
+
+        late ResponsiveWindowData builderData;
+
+        await tester.pumpWidget(
+          constrainedResponsiveWindow(
+            width: 900,
+            height: 500,
+            child: ResponsiveWindowBuilder(
+              compact: (context, data) {
+                builderData = data;
+
+                return const Text('compact');
+              },
+              expanded: (context, data) {
+                builderData = data;
+
+                return const Text('expanded');
+              },
+            ),
+          ),
+        );
+
+        expect(find.text('expanded'), findsOneWidget);
+        expect(builderData.width, 900);
+        expect(builderData.height, 500);
+        expect(builderData.category, ResponsiveWindowCategory.expanded);
+        expect(builderData.aspect, ResponsiveWindowAspect.landscape);
+      },
+    );
+  });
+
+  group('ResponsiveWindowBuilder.animated', () {
+    testWidgets(
+      'builds the resolved responsive builder',
+      (tester) async {
+        tester.view.devicePixelRatio = 1;
+        tester.view.physicalSize = const Size(1000, 700);
+
+        addTearDown(() {
+          tester.view.resetDevicePixelRatio();
+          tester.view.resetPhysicalSize();
+        });
+
+        await tester.pumpWidget(
+          constrainedResponsiveWindow(
+            width: 900,
+            height: 500,
+            child: ResponsiveWindowBuilder.animated(
+              compact: (context, data) {
+                return const Text('compact');
               },
               expanded: (context, data) {
                 return const Text('expanded');
               },
-              large: (context, data) {
-                return const Text('large');
-              },
-              extraLarge: (context, data) {
-                return const Text('extraLarge');
-              },
             ),
           ),
         );
-      }
 
-      addTearDown(() {
-        tester.view.resetDevicePixelRatio();
-        tester.view.resetPhysicalSize();
-      });
-
-      await pumpForWidth(500);
-      expect(find.text('compact'), findsOneWidget);
-
-      await pumpForWidth(700);
-      expect(find.text('medium'), findsOneWidget);
-
-      await pumpForWidth(900);
-      expect(find.text('expanded'), findsOneWidget);
-
-      await pumpForWidth(1300);
-      expect(find.text('large'), findsOneWidget);
-
-      await pumpForWidth(1700);
-      expect(find.text('extraLarge'), findsOneWidget);
-    });
-
-    testWidgets('falls back to the nearest smaller configured builder',
-        (tester) async {
-      Future<void> pumpForWidth(double width) async {
-        tester.view.devicePixelRatio = 1;
-        tester.view.physicalSize = Size(width + 100, 700);
-
-        await tester.pumpWidget(
-          constrainedResponsiveWindow(
-            width: width,
-            height: 500,
-            child: ResponsiveWindowBuilder(
-              compact: (context, data) {
-                return const Text('compact');
-              },
-              medium: (context, data) {
-                return const Text('medium');
-              },
-              large: (context, data) {
-                return const Text('large');
-              },
-            ),
-          ),
-        );
-      }
-
-      addTearDown(() {
-        tester.view.resetDevicePixelRatio();
-        tester.view.resetPhysicalSize();
-      });
-
-      await pumpForWidth(500);
-      expect(find.text('compact'), findsOneWidget);
-
-      await pumpForWidth(700);
-      expect(find.text('medium'), findsOneWidget);
-
-      await pumpForWidth(900);
-      expect(find.text('medium'), findsOneWidget);
-
-      await pumpForWidth(1300);
-      expect(find.text('large'), findsOneWidget);
-
-      await pumpForWidth(1700);
-      expect(find.text('large'), findsOneWidget);
-    });
-
-    testWidgets('passes ResponsiveWindowData to the selected builder',
-        (tester) async {
-      tester.view.devicePixelRatio = 1;
-      tester.view.physicalSize = const Size(1000, 700);
-
-      addTearDown(() {
-        tester.view.resetDevicePixelRatio();
-        tester.view.resetPhysicalSize();
-      });
-
-      late ResponsiveWindowData builderData;
-
-      await tester.pumpWidget(
-        constrainedResponsiveWindow(
-          width: 900,
-          height: 500,
-          child: ResponsiveWindowBuilder(
-            compact: (context, data) {
-              builderData = data;
-
-              return const Text('compact');
-            },
-            expanded: (context, data) {
-              builderData = data;
-
-              return const Text('expanded');
-            },
-          ),
-        ),
-      );
-
-      expect(find.text('expanded'), findsOneWidget);
-      expect(builderData.width, 900);
-      expect(builderData.height, 500);
-      expect(builderData.category, ResponsiveWindowCategory.expanded);
-      expect(builderData.aspect, ResponsiveWindowAspect.landscape);
-    });
-  });
-
-  group('ResponsiveWindowBuilder.animated', () {
-    testWidgets('builds the resolved responsive builder', (tester) async {
-      tester.view.devicePixelRatio = 1;
-      tester.view.physicalSize = const Size(1000, 700);
-
-      addTearDown(() {
-        tester.view.resetDevicePixelRatio();
-        tester.view.resetPhysicalSize();
-      });
-
-      await tester.pumpWidget(
-        constrainedResponsiveWindow(
-          width: 900,
-          height: 500,
-          child: ResponsiveWindowBuilder.animated(
-            compact: (context, data) {
-              return const Text('compact');
-            },
-            expanded: (context, data) {
-              return const Text('expanded');
-            },
-          ),
-        ),
-      );
-
-      expect(find.text('expanded'), findsOneWidget);
-    });
+        expect(find.text('expanded'), findsOneWidget);
+      },
+    );
 
     testWidgets(
       'does not create an animated transition when fallback builder is unchanged',
@@ -972,5 +1143,127 @@ void main() {
         expect(find.text('compact'), findsOneWidget);
       },
     );
+
+    testWidgets(
+      'does not preserve local state when resolved builder changes',
+      (tester) async {
+        Future<void> pumpForWidth(double width) async {
+          tester.view.devicePixelRatio = 1;
+          tester.view.physicalSize = Size(width + 100, 700);
+
+          await tester.pumpWidget(
+            constrainedResponsiveWindow(
+              width: width,
+              height: 500,
+              child: ResponsiveWindowBuilder.animated(
+                duration: const Duration(milliseconds: 200),
+                compact: (context, data) {
+                  return const _StatefulCounter(label: 'compact');
+                },
+                medium: (context, data) {
+                  return const _StatefulCounter(label: 'medium');
+                },
+              ),
+            ),
+          );
+        }
+
+        addTearDown(() {
+          tester.view.resetDevicePixelRatio();
+          tester.view.resetPhysicalSize();
+        });
+
+        await pumpForWidth(700);
+        expect(find.text('medium: 0'), findsOneWidget);
+
+        await tester.tap(find.text('medium: 0'));
+        await tester.pump();
+
+        expect(find.text('medium: 1'), findsOneWidget);
+
+        await pumpForWidth(500);
+        await tester.pump();
+
+        expect(find.text('medium: 1'), findsOneWidget);
+        expect(find.text('compact: 0'), findsOneWidget);
+
+        await tester.pumpAndSettle();
+
+        expect(find.text('medium: 1'), findsNothing);
+        expect(find.text('compact: 0'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'preserves local state when resolved fallback builder is unchanged',
+      (tester) async {
+        Future<void> pumpForWidth(double width) async {
+          tester.view.devicePixelRatio = 1;
+          tester.view.physicalSize = Size(width + 100, 700);
+
+          await tester.pumpWidget(
+            constrainedResponsiveWindow(
+              width: width,
+              height: 500,
+              child: ResponsiveWindowBuilder.animated(
+                duration: const Duration(milliseconds: 200),
+                compact: (context, data) {
+                  return const _StatefulCounter(label: 'compact');
+                },
+                medium: (context, data) {
+                  return const _StatefulCounter(label: 'medium');
+                },
+              ),
+            ),
+          );
+        }
+
+        addTearDown(() {
+          tester.view.resetDevicePixelRatio();
+          tester.view.resetPhysicalSize();
+        });
+
+        await pumpForWidth(1700);
+        expect(find.text('medium: 0'), findsOneWidget);
+
+        await tester.tap(find.text('medium: 0'));
+        await tester.pump();
+
+        expect(find.text('medium: 1'), findsOneWidget);
+
+        await pumpForWidth(1300);
+        await tester.pump();
+
+        expect(find.text('medium: 1'), findsOneWidget);
+        expect(find.text('compact: 0'), findsNothing);
+      },
+    );
   });
+}
+
+class _StatefulCounter extends StatefulWidget {
+  const _StatefulCounter({
+    required this.label,
+  });
+
+  final String label;
+
+  @override
+  State<_StatefulCounter> createState() => _StatefulCounterState();
+}
+
+class _StatefulCounterState extends State<_StatefulCounter> {
+  int _count = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _count++;
+        });
+      },
+      child: Text('${widget.label}: $_count'),
+    );
+  }
 }

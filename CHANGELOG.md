@@ -1,7 +1,15 @@
+## 2.1.2
+
+* DOCS: document local state behavior when switching responsive layouts
+* DOCS: improve public API documentation for responsive builder state behavior
+* TEST: add coverage for local state behavior in responsive builders
+* TEST: add coverage for nested responsive window scopes
+* CHORE: add pub.dev topics
+
 ## 2.1.1
 
-* DOCS: add README badges
 * DOCS: add README FAQ
+* DOCS: add README badges
 
 ## 2.1.0
 

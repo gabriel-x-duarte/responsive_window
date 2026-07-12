@@ -516,6 +516,11 @@ typedef ResponsiveWindowWidgetBuilder = Widget Function(
 ///
 /// Builders fall back from the current category to the nearest smaller
 /// configured category, following the same behavior as [ResponsiveWindowValue].
+///
+/// This widget does not transfer local state between responsive layout branches.
+///
+/// To preserve state across responsive layout changes, manage that state outside
+/// the replaced subtree and provide it to the new subtree when it is created.
 class ResponsiveWindowBuilder extends StatelessWidget {
   /// The default transition duration used by [ResponsiveWindowBuilder.animated].
   static const Duration defaultTransitionDuration = Duration(milliseconds: 220);

@@ -7,8 +7,7 @@ An app-level utility for reading the current Flutter app window size
 from anywhere in the widget tree.
 
 Use it to make simple and predictable layout decisions based on window size or
-responsive width breakpoints, without scaling widgets or detecting physical
-device types.
+width breakpoints, without scaling widgets or detecting physical device types.
 
 ## Features
 
@@ -560,6 +559,34 @@ changes.
 
 This keeps transitions tied to actual responsive layout changes instead of every
 category boundary change.
+
+#### Does `ResponsiveWindowBuilder` preserve local widget state when switching responsive layouts?
+
+No. `ResponsiveWindowBuilder` does not transfer local state from one subtree to
+another.
+
+When a responsive change resolves to a different builder or layout branch,
+Flutter replaces the previous subtree with the new one. Local state inside the
+replaced subtree, such as the state of a `StatefulWidget`, `TextField` input,
+focus state, or controllers created inside that subtree, is lost.
+
+This behavior is not specific to `ResponsiveWindowBuilder`. It comes from how
+Flutter updates widgets in the widget tree. The same rule applies when switching
+widgets with `ResponsiveWindowValue<Widget>`, `if` or `switch` statements.
+
+`ResponsiveWindowBuilder.animated` follows the same rule. The animation only
+transitions between the previous and new resolved builders. It does not preserve
+or move local state from one subtree to another.
+
+Flutter preserves local `State` only when the new widget can update the same
+element, which requires a compatible widget type, key, and position in the tree.
+When a responsive layout branch creates a different subtree, local state from the
+previous subtree is not preserved.
+
+To preserve state across responsive layout changes, manage that state outside the
+replaced subtree and provide it to the new subtree when it is created. This can
+be done using state management techniques with `ValueNotifier`,
+`InheritedWidget`, or external solutions such as Riverpod, Bloc, or Provider.
 
 #### Can I read responsive window data when no `ResponsiveWindow` ancestor is guaranteed?
 
